@@ -1,6 +1,37 @@
+# Ambientes virtuais
 .venv/
+venv/
+env/
+
+# Python
 __pycache__/
-.ipynb_checkpoints/
-data/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Segredos e configurações locais
 .env
-*.parquet
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Artefatos locais
+build/
+dist/
+*.egg-info/
