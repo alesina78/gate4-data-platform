@@ -27,17 +27,19 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 ---
 
 ## 🏗️ Arquitetura do Pipeline
+```
 ┌─────────────────────────────────────────────────────────────┐
-│ GATE4 Data Platform │
+│                     GATE4 Data Platform                     │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-│ M0 │ M1 │ M2 │ M3–M7 │ M8 │
-│ Gerador │Qualidade │ Limpeza │Analytics │ Orquestração │
-│Sintético │ │ │ │ │
+│  M0      │  M1      │  M2      │  M3–M7   │  M8             │
+│ Gerador  │Qualidade │ Limpeza  │Analytics │ Orquestração    │
+│Sintético │          │          │          │                 │
 ├──────────┴──────────┴──────────┴──────────┴─────────────────┤
-│ Persistência em Parquet (staging → gold) │
+│            Persistência em Parquet  (staging → gold)        │
 ├─────────────────────────────────────────────────────────────┤
-│ ML · Churn Prediction (HistGradientBoosting) │
+│          ML · Churn Prediction  (HistGradientBoosting)      │
 └─────────────────────────────────────────────────────────────┘
+```
 
 **Modelo de dados:** 17 tabelas relacionais, arquitetura multi-empresa (multi-tenant), com chaves estrangeiras validadas em cada camada.
 
@@ -150,44 +152,45 @@ python src/gate4/g18_m3_financeiro.py
 ---
 
 ## 📁 Estrutura do Repositório
+```
 gate4-data-platform/
 │
 ├── src/gate4/
-│ ├── g18_m0_gerador.py
-│ ├── g18_m1_qualidade.py
-│ ├── g18_m2_limpeza.py
-│ ├── g18_m3_financeiro.py
-│ ├── g18_m4_operacao.py
-│ ├── g18_m5_manejo.py
-│ ├── g18_m6_estoque.py
-│ ├── g18_m7_alunos.py
-│ ├── g18_pipeline.py
-│ └── g18_guia1_churn.py
+│   ├── g18_m0_gerador.py
+│   ├── g18_m1_qualidade.py
+│   ├── g18_m2_limpeza.py
+│   ├── g18_m3_financeiro.py
+│   ├── g18_m4_operacao.py
+│   ├── g18_m5_manejo.py
+│   ├── g18_m6_estoque.py
+│   ├── g18_m7_alunos.py
+│   ├── g18_pipeline.py
+│   └── g18_guia1_churn.py
 │
 ├── notebooks/
-│ ├── 01_teste_pandas.py
-│ ├── 02_series_temporais_pandas.py
-│ ├── 03_numpy_eda_visualizacao.py
-│ ├── 04_machine_learning_churn.py
-│ └── guia-02-series-temporais/
-│ ├── ex01_sql_para_pandas.py
-│ ├── ex02_leakage_temporal.py
-│ └── ex03_previsao_faturamento_gate4.py
+│   ├── 01_teste_pandas.py
+│   ├── 02_series_temporais_pandas.py
+│   ├── 03_numpy_eda_visualizacao.py
+│   ├── 04_machine_learning_churn.py
+│   └── guia-02-series-temporais/
+│       ├── ex01_sql_para_pandas.py
+│       ├── ex02_leakage_temporal.py
+│       └── ex03_previsao_faturamento_gate4.py
 │
 ├── modelos/
-│ └── modelo_churn_gate4.joblib
+│   └── modelo_churn_gate4.joblib
 │
-├── data/
-│ └── processed/
-│ ├── alunos.parquet
-│ ├── alunos_risco_churn.parquet
-│ ├── cavalos_tratados.parquet
-│ └── relatorio_qualidade.parquet
+├── data/processed/
+│   ├── alunos.parquet
+│   ├── alunos_risco_churn.parquet
+│   ├── cavalos_tratados.parquet
+│   └── relatorio_qualidade.parquet
 │
-├── saidas/ # 7 gráficos gerados pelo pipeline
+├── saidas/                    # 7 gráficos gerados pelo pipeline
 ├── tests/
 ├── pyproject.toml
 └── README.md
+```
 
 ---
 
