@@ -174,7 +174,21 @@ gate4-data-platform/
 │   ├── 02_series_temporais_pandas.py
 │   ├── 03_numpy_eda_visualizacao.py
 │   ├── 04_machine_learning_churn.py
-│   └── guia-02-series-temporais/
+│   ├── guia-02-series-temporais/
+│   │   ├── ex01_sql_para_pandas.py
+│   │   ├── ex02_leakage_temporal.py
+│   │   ├── ex03_previsao_faturamento_gate4.py
+│   │   └── README.md
+│   ├── guia-03-fastapi-docker/
+│   │   ├── ex04_treinar_pipeline_churn.py
+│   │   ├── ex05_fastapi_app.py
+│   │   ├── ex06_testes_api.py
+│   │   └── README.md
+│   └── guia-04-eda-visualizacao/
+│       ├── ex07_numpy_fundamentos.py
+│       ├── ex08_eda_completo_gate4.py
+│       ├── ex09_visualizacoes_avancadas.py
+│       └── README.md
 │       ├── ex01_sql_para_pandas.py
 │       ├── ex02_leakage_temporal.py
 │       └── ex03_previsao_faturamento_gate4.py
@@ -182,7 +196,9 @@ gate4-data-platform/
 ├── modelos/
 │   └── modelo_churn_gate4.joblib
 │
-├── data/processed/
+├── scripts/                    # utilitários e experimentos
+├── docs/                      # Anotacoes.sql, ARQUITETURA.md
+├── data/processed/            # gerado pelo pipeline (no .gitignore)
 │   ├── alunos.parquet
 │   ├── alunos_risco_churn.parquet
 │   ├── cavalos_tratados.parquet
