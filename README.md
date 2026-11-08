@@ -12,7 +12,25 @@
 
 ---
 
-🎯 O Problema de NegócioCentros equestres operam com dados fragmentados: controle de saúde animal em planilhas, faturamento em cadernos, frequência de alunos no WhatsApp. O resultado é inadimplência invisível, cavalos sobrecarregados e churn de alunos que ninguém antecipou.Este projeto constrói a espinha dorsal analítica do GATE4 — plataforma SaaS multi-tenant para gestão de haras e hípicas — transformando 17 tabelas relacionais em inteligência acionável para o gestor do centro.Perguntas que o pipeline responde:Qual instrutor está com maior taxa de cancelamento de aulas?Quais cavalos estão com carga de trabalho acima do Percentil 90?Quais alunos têm perfil de churn nos próximos 30 dias?Quais insumos entrarão em ruptura de estoque esta semana?Qual o aging de inadimplência por empresa e faixa de vencimento?🏗️ Arquitetura do Pipeline┌─────────────────────────────────────────────────────────────┐
+## 🎯 O Problema de Negócio
+
+Centros equestres operam com dados fragmentados: controle de saúde animal em planilhas, faturamento em cadernos, frequência de alunos no WhatsApp. O resultado é **inadimplência invisível, cavalos sobrecarregados e churn de alunos que ninguém antecipou**.
+
+Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma SaaS multi-tenant para gestão de haras e hípicas — transformando 17 tabelas relacionais em inteligência acionável para o gestor do centro.
+
+**Perguntas que o pipeline responde:**
+- Qual instrutor está com maior taxa de cancelamento de aulas?
+- Quais cavalos estão com carga de trabalho acima do Percentil 90?
+- Quais alunos têm perfil de churn nos próximos 30 dias?
+- Quais insumos entrarão em ruptura de estoque esta semana?
+- Qual o aging de inadimplência por empresa e faixa de vencimento?
+
+---
+
+## 🏗️ Arquitetura do Pipeline
+
+```text
+┌─────────────────────────────────────────────────────────────┐
 │                     GATE4 Data Platform                     │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
 │  M0      │  M1      │  M2      │  M3–M7   │  M8             │
@@ -23,9 +41,101 @@
 ├─────────────────────────────────────────────────────────────┤
 │          ML · Churn Prediction  (HistGradientBoosting)       │
 └─────────────────────────────────────────────────────────────┘
-Modelo de dados: 17 tabelas relacionais, arquitetura multi-empresa (multi-tenant), com chaves estrangeiras validadas em cada camada.📦 Módulos de ProduçãoCamada de DadosMóduloArquivoResponsabilidadeM0 · Gerador Sintéticosrc/gate4/g18_m0_gerador.pyGeração relacional com numpy.random (Poisson/Lognormal) e injeção controlada de inconsistênciasM1 · Qualidadesrc/gate4/g18_m1_qualidade.pyAuditoria de integridade referencial, detecção de FKs órfãs e validação de nulos por criticidadeM2 · Limpezasrc/gate4/g18_m2_limpeza.pyNormalização de textos via Regex, conversão segura de tipos (Int64, datetime) e log de transformaçõesCamada AnalíticaMóduloArquivoResponsabilidadeM3 · Financeirosrc/gate4/g18_m3_financeiro.pyFaturamento mensal, inadimplência, aging de faturas com datas dinâmicas e auditoria contábilM4 · Operaçãosrc/gate4/g18_m4_operacao.pyTaxa de conclusão de aulas por instrutor e sobrecarga de cavalos via Percentil 90M5 · Manejosrc/gate4/g18_m5_manejo.pyAuditoria de prazos de vacinas, vermífugos, ferrageamentos e casqueamentos por empresaM6 · Estoquesrc/gate4/g18_m6_estoque.pyDias de cobertura de insumos, prevenção de divisão por zero e alertas de rupturaM7 · Alunos & RFMsrc/gate4/g18_m7_alunos.pyAlunos em risco de churn (>60 dias sem frequência) e métricas RFMCamada de Orquestração & MLMóduloArquivoResponsabilidadeM8 · Pipelinesrc/gate4/g18_pipeline.pyOrquestração sequencial M0→M7 com persistência em Parquet (raw → staging → gold)ML · Churnsrc/gate4/g18_guia1_churn.pyModelo preditivo de evasão — ABT, pipeline Scikit-Learn, ROC-AUC e Lift Operacional🤖 Machine Learning — Previsão de ChurnConstrução da ABT (Analytical Base Table)Variáveis comportamentais (frequência, cancelamentos, intervalo desde última aula) e financeiras (inadimplência, ticket médio)Data de corte dinâmica — features usam apenas dados do passado (zero data leakage)Modelo & ValidaçãoHistGradientBoostingClassifier — robusto a nulos, sem imputação manualPipeline Scikit-Learn com validação cruzada temporal (TimeSeriesSplit)Métricas de Impacto de NegócioROC-AUC — discriminação técnica do modeloLift Operacional — eficiência da campanha direcionada vs. contatos aleatóriosArtefato treinado: modelos/modelo_churn_gate4.joblib📊 Visualizações GeradasO pipeline produz automaticamente 7 gráficos salvos em saidas/:ArquivoVisualização01_hist_dias_atraso.pngDistribuição de dias de atraso nas faturas02_boxplot_mensalidade_plano.pngMensalidade por plano contratado03_barras_atraso_plano.pngInadimplência por tipo de plano04_dispersao_aulas_atraso.pngCorrelação entre frequência e atraso05_mapa_correlacao.pngMapa de calor das correlações06_matriz_confusao.pngDesempenho do modelo de churn07_curva_precision_recall.pngTrade-off precisão × recall📚 Trilha de Estudos (Apostila Guia 0)Jornada de transição de Oracle/PL-SQL Sênior → Engenharia de Dados & Analytics, documentada com scripts comentados linha a linha no padrão SQL → Pandas:GuiaTema & EntregávelStatusGuia 19Setup do Ambiente (VS Code, Python, Git, Pytest)✅ ConcluídoGuia 18Projeto Pandas/NumPy com ER real do GATE4 (notebooks/guia-18-projeto-pandas-numpy/)✅ ConcluídoGuia 1SQL → Pandas → ML: EDA, NumPy e visualizações (notebooks/guia-01-sql-pandas-ml/)✅ ConcluídoGuia 2Séries Temporais com Pandas, rolling e leakage (notebooks/guia-02-series-temporais/)✅ ConcluídoGuia 3FastAPI + Docker: API de risco de churn (notebooks/guia-03-fastapi-docker/)✅ Concluído🧪 Testes Automatizadospip install -r requirements.txt
+```
+
+**Modelo de dados:** 17 tabelas relacionais, arquitetura multi-empresa (multi-tenant), com chaves estrangeiras validadas em cada camada.
+
+---
+
+## 📦 Módulos de Produção
+
+### Camada de Dados
+
+| Módulo | Arquivo | Responsabilidade |
+|---|---|---|
+| **M0 · Gerador Sintético** | `src/gate4/g18_m0_gerador.py` | Geração relacional com `numpy.random` (Poisson/Lognormal) e injeção controlada de inconsistências |
+| **M1 · Qualidade** | `src/gate4/g18_m1_qualidade.py` | Auditoria de integridade referencial, detecção de FKs órfãs e validação de nulos por criticidade |
+| **M2 · Limpeza** | `src/gate4/g18_m2_limpeza.py` | Normalização de textos via Regex, conversão segura de tipos (`Int64`, `datetime`) e log de transformações |
+
+### Camada Analítica
+
+| Módulo | Arquivo | Responsabilidade |
+|---|---|---|
+| **M3 · Financeiro** | `src/gate4/g18_m3_financeiro.py` | Faturamento mensal, inadimplência, aging de faturas com datas dinâmicas e auditoria contábil |
+| **M4 · Operação** | `src/gate4/g18_m4_operacao.py` | Taxa de conclusão de aulas por instrutor e sobrecarga de cavalos via Percentil 90 |
+| **M5 · Manejo** | `src/gate4/g18_m5_manejo.py` | Auditoria de prazos de vacinas, vermífugos, ferrageamentos e casqueamentos por empresa |
+| **M6 · Estoque** | `src/gate4/g18_m6_estoque.py` | Dias de cobertura de insumos, prevenção de divisão por zero e alertas de ruptura |
+| **M7 · Alunos & RFM** | `src/gate4/g18_m7_alunos.py` | Alunos em risco de churn (>60 dias sem frequência) e métricas RFM |
+
+### Camada de Orquestração & ML
+
+| Módulo | Arquivo | Responsabilidade |
+|---|---|---|
+| **M8 · Pipeline** | `src/gate4/g18_pipeline.py` | Orquestração sequencial M0→M7 com persistência em Parquet (raw → staging → gold) |
+| **ML · Churn** | `src/gate4/g18_guia1_churn.py` | Modelo preditivo de evasão — ABT, pipeline Scikit-Learn, ROC-AUC e Lift Operacional |
+
+---
+
+## 🤖 Machine Learning — Previsão de Churn
+
+**Construção da ABT (Analytical Base Table)**
+- Variáveis comportamentais (frequência, cancelamentos, intervalo desde última aula) e financeiras (inadimplência, ticket médio)
+- Data de corte dinâmica — features usam **apenas dados do passado** *(zero data leakage)*
+
+**Modelo & Validação**
+- `HistGradientBoostingClassifier` — robusto a nulos, sem imputação manual
+- Pipeline Scikit-Learn com validação cruzada temporal (`TimeSeriesSplit`)
+
+**Métricas de Impacto de Negócio**
+- **ROC-AUC** — discriminação técnica do modelo
+- **Lift Operacional** — eficiência da campanha direcionada vs. contatos aleatórios
+
+**Artefato treinado:** `modelos/modelo_churn_gate4.joblib`
+
+---
+
+## 📊 Visualizações Geradas
+
+O pipeline produz automaticamente 7 gráficos salvos em `saidas/`:
+
+| Arquivo | Visualização |
+|---|---|
+| `01_hist_dias_atraso.png` | Distribuição de dias de atraso nas faturas |
+| `02_boxplot_mensalidade_plano.png` | Mensalidade por plano contratado |
+| `03_barras_atraso_plano.png` | Inadimplência por tipo de plano |
+| `04_dispersao_aulas_atraso.png` | Correlação entre frequência e atraso |
+| `05_mapa_correlacao.png` | Mapa de calor das correlações |
+| `06_matriz_confusao.png` | Desempenho do modelo de churn |
+| `07_curva_precision_recall.png` | Trade-off precisão × recall |
+
+---
+
+## 📚 Trilha de Estudos (Apostila Guia 0)
+
+Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Analytics**, documentada em notebooks e scripts com foco no padrão **SQL → Pandas**:
+
+| Trilha / Guia | Tema & Entregável | Status |
+|---|---|---|
+| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18: Projeto Pandas/NumPy com ER real do GATE4 | ✅ Concluído |
+| `notebooks/guia-01-sql-pandas-ml/` | Guia 1: SQL → Pandas → ML: EDA, NumPy e visualizações | ✅ Concluído |
+| `notebooks/guia-02-series-temporais/` | Guia 2: Séries Temporais, resample, rolling e leakage | ✅ Concluído |
+| `notebooks/guia-03-fastapi-docker/` | Guia 3: FastAPI + Docker: API de risco de churn | ✅ Concluído |
+
+---
+
+## 🧪 Testes Automatizados
+
+```bash
+pip install -r requirements.txt
 pytest -v
-▶️ Como Executargit clone https://github.com/alesina78/gate4-data-platform.git
+```
+
+---
+
+## ▶️ Como Executar
+
+```bash
+git clone https://github.com/alesina78/gate4-data-platform.git
 cd gate4-data-platform
 
 python -m venv .venv
@@ -38,7 +148,14 @@ python src/gate4/g18_pipeline.py
 
 # Módulo individual
 python src/gate4/g18_m3_financeiro.py
-📁 Estrutura do Repositóriogate4-data-platform/
+```
+
+---
+
+## 📁 Estrutura do Repositório
+
+```text
+gate4-data-platform/
 │
 ├── src/gate4/                          # Módulos de produção do pipeline M0 a M8 + ML Churn
 │   ├── g18_m0_gerador.py
@@ -111,9 +228,11 @@ python src/gate4/g18_m3_financeiro.py
 ├── tests/                              # Suíte de testes automatizados (pytest)
 ├── pyproject.toml
 └── README.md
+```
+
+---
 
 ## 👤 Autor
-
 **Alessandro Giordano**  
 Senior Data Engineer & Analytics Specialist | 25+ anos em TI Corporativa  
 
