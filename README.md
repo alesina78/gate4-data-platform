@@ -120,6 +120,7 @@ Trilha estruturada em `notebooks/`, com scripts comentados linha a linha no padr
 | `notebooks/04_machine_learning_churn.py` | Machine Learning aplicado ao churn |
 | `notebooks/guia-02-series-temporais/` | Exercícios do Guia 2 com documentação SQL→Pandas |
 | `notebooks/guia-03-fastapi-docker/` | Guia 3 — FastAPI + Docker: pipeline de churn em container |
+| `notebooks/guia-04-eda-visualizacao/` | Guia 4 — EDA, NumPy e visualizações: os 7 gráficos do GATE4 explicados |
 
 ---
 
