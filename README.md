@@ -199,6 +199,7 @@ gate4-data-platform/
 │   ├── g10_churn_project.py
 │   ├── g16_performance.py
 │   ├── generators_G18_1.py
+│   ├── Guia 16C benchmark_pandas.py    # Engine de benchmark real (SQL para Pandas)
 │   └── README.md
 │
 ├── modelos/                            # Artefatos serializados (.joblib)
