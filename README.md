@@ -1,12 +1,13 @@
 # 🐎 GATE4 Data Platform
 
-> **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.
+> **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.  
 > Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → Machine Learning.
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=flat-square&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.x-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 [![Pytest](https://img.shields.io/badge/Testes-pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](https://pytest.org/)
+[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)](https://github.com/alesina78/gate4-data-platform/actions)
 [![Status](https://img.shields.io/badge/Status-Ativo-2ea44f?style=flat-square)]()
 
 ---
@@ -27,7 +28,8 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 ---
 
 ## 🏗️ Arquitetura do Pipeline
-```
+
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     GATE4 Data Platform                     │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
@@ -35,9 +37,9 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 │ Gerador  │Qualidade │ Limpeza  │Analytics │ Orquestração    │
 │Sintético │          │          │          │                 │
 ├──────────┴──────────┴──────────┴──────────┴─────────────────┤
-│            Persistência em Parquet  (staging → gold)        │
+│            Persistência em Parquet  (staging → gold)         │
 ├─────────────────────────────────────────────────────────────┤
-│          ML · Churn Prediction  (HistGradientBoosting)      │
+│          ML · Churn Prediction  (HistGradientBoosting)       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -45,7 +47,7 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ---
 
-## 📦 Módulos
+## 📦 Módulos de Produção
 
 ### Camada de Dados
 
@@ -108,19 +110,16 @@ O pipeline produz automaticamente 7 gráficos salvos em `saidas/`:
 
 ---
 
-## 📚 Notebooks de Estudo
+## 📚 Trilha de Estudos & Notebooks
 
-Trilha estruturada em `notebooks/`, com scripts comentados linha a linha no padrão **SQL → Pandas**:
+Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Analytics**, documentada com scripts comentados linha a linha no padrão **SQL → Pandas**:
 
-| Arquivo | Tema |
-|---|---|
-| `notebooks/01_teste_pandas.py` | Fundamentos Pandas + NumPy |
-| `notebooks/02_series_temporais_pandas.py` | Séries temporais, resample, rolling |
-| `notebooks/03_numpy_eda_visualizacao.py` | EDA e visualização com Matplotlib |
-| `notebooks/04_machine_learning_churn.py` | Machine Learning aplicado ao churn |
-| `notebooks/guia-02-series-temporais/` | Exercícios do Guia 2 com documentação SQL→Pandas |
-| `notebooks/guia-03-fastapi-docker/` | Guia 3 — FastAPI + Docker: pipeline de churn em container |
-| `notebooks/guia-01-sql-pandas-ml/` | Guia 1 — SQL → Pandas → ML: EDA, NumPy e visualizações |
+| Pasta / Guia | Tema | Status |
+|---|---|---|
+| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18 — Projeto Pandas/NumPy com ER real do GATE4 | ✅ Concluído |
+| `notebooks/guia-01-sql-pandas-ml/` | Guia 1 — SQL → Pandas → ML: EDA, NumPy e visualizações | ✅ Concluído |
+| `notebooks/guia-02-series-temporais/` | Guia 2 — Séries Temporais, rolling, leakage temporal | ✅ Concluído |
+| `notebooks/guia-03-fastapi-docker/` | Guia 3 — FastAPI + Docker: pipeline de churn em container | ✅ Concluído |
 
 ---
 
@@ -154,7 +153,8 @@ python src/gate4/g18_m3_financeiro.py
 ---
 
 ## 📁 Estrutura do Repositório
-```
+
+```text
 gate4-data-platform/
 │
 ├── src/gate4/
@@ -170,41 +170,35 @@ gate4-data-platform/
 │   └── g18_guia1_churn.py
 │
 ├── notebooks/
-│   ├── 01_teste_pandas.py
-│   ├── 02_series_temporais_pandas.py
-│   ├── 03_numpy_eda_visualizacao.py
-│   ├── 04_machine_learning_churn.py
+│   ├── guia-18-projeto-pandas-numpy/
+│   ├── guia-01-sql-pandas-ml/
+│   │   ├── ex07_numpy_fundamentos.py
+│   │   ├── ex08_eda_completo_gate4.py
+│   │   ├── ex09_visualizacoes_avancadas.py
+│   │   └── README.md
 │   ├── guia-02-series-temporais/
 │   │   ├── ex01_sql_para_pandas.py
 │   │   ├── ex02_leakage_temporal.py
 │   │   ├── ex03_previsao_faturamento_gate4.py
 │   │   └── README.md
-│   ├── guia-03-fastapi-docker/
-│   │   ├── ex04_treinar_pipeline_churn.py
-│   │   ├── ex05_fastapi_app.py
-│   │   ├── ex06_testes_api.py
-│   │   └── README.md
-│   └── guia-01-sql-pandas-ml/
-│       ├── ex07_numpy_fundamentos.py
-│       ├── ex08_eda_completo_gate4.py
-│       ├── ex09_visualizacoes_avancadas.py
+│   └── guia-03-fastapi-docker/
+│       ├── ex04_treinar_pipeline_churn.py
+│       ├── ex05_fastapi_app.py
+│       ├── ex06_testes_api.py
 │       └── README.md
-│       ├── ex01_sql_para_pandas.py
-│       ├── ex02_leakage_temporal.py
-│       └── ex03_previsao_faturamento_gate4.py
 │
 ├── modelos/
 │   └── modelo_churn_gate4.joblib
 │
-├── scripts/                    # utilitários e experimentos
-├── docs/                      # Anotacoes.sql, ARQUITETURA.md
-├── data/processed/            # gerado pelo pipeline (no .gitignore)
+├── scripts/                 # Utilitários e experimentos
+├── docs/                    # Anotacoes.sql, ARQUITETURA.md
+├── data/processed/          # Gerado pelo pipeline (no .gitignore)
 │   ├── alunos.parquet
 │   ├── alunos_risco_churn.parquet
 │   ├── cavalos_tratados.parquet
 │   └── relatorio_qualidade.parquet
 │
-├── saidas/                    # 7 gráficos gerados pelo pipeline
+├── saidas/                  # 7 gráficos gerados pelo pipeline
 ├── tests/
 ├── pyproject.toml
 └── README.md
@@ -214,8 +208,8 @@ gate4-data-platform/
 
 ## 👤 Autor
 
-**Alessandro Giordano**
-Senior Data Engineer & Analytics Specialist | 25+ anos em TI Corporativa
+**Alessandro Giordano**  
+Senior Data Engineer & Analytics Specialist | 25+ anos em TI Corporativa  
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-alessandrolesina-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alessandrolesina/)
 [![GitHub](https://img.shields.io/badge/GitHub-alesina78-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/alesina78)
