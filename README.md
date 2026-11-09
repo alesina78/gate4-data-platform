@@ -1,7 +1,7 @@
 # 🐎 GATE4 Data Platform
 
-> **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.  
-> Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → Machine Learning.
+> **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.
+> Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → Estatística Aplicada → Machine Learning.
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=flat-square&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
@@ -29,13 +29,13 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ## 🏗️ Arquitetura do Pipeline
 
-```text
+```
 ┌─────────────────────────────────────────────────────────────┐
-│                     GATE4 Data Platform                     │
+│                     GATE4 Data Platform                      │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
 │  M0      │  M1      │  M2      │  M3–M7   │  M8             │
 │ Gerador  │Qualidade │ Limpeza  │Analytics │ Orquestração    │
-│Sintético │          │          │          │                 │
+│Sintético │          │          │          │                  │
 ├──────────┴──────────┴──────────┴──────────┴─────────────────┤
 │            Persistência em Parquet  (staging → gold)         │
 ├─────────────────────────────────────────────────────────────┤
@@ -76,6 +76,18 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ---
 
+## 🔬 Laboratórios Práticos & Benchmarks
+
+Além do pipeline principal, a pasta `scripts/` abriga suítes avançadas de validação estatística e benchmarks de performance:
+
+| Script | Foco & Descrição |
+|---|---|
+| `scripts/g10_churn_project.py` | Protótipo inicial do modelo de churn (versão anterior ao pipeline de produção) |
+| `scripts/g16_performance.py` | Benchmarks: vetorização vs loop, otimização de memória, Parquet vs CSV, DuckDB |
+| `scripts/generators_G18_1.py` | Gerador auxiliar usado durante o desenvolvimento do M0 |
+
+---
+
 ## 🤖 Machine Learning — Previsão de Churn
 
 **Construção da ABT (Analytical Base Table)**
@@ -110,20 +122,31 @@ O pipeline produz automaticamente 7 gráficos salvos em `saidas/`:
 
 ---
 
-## 📚 Trilha de Estudos (Apostila Guia 0)
+## 📚 Trilha de Estudos
 
-Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Analytics**, documentada em notebooks e scripts com foco no padrão **SQL → Pandas**:
+Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Analytics**, documentada com scripts comentados linha a linha no padrão **SQL → Pandas**:
 
-| Trilha / Guia | Tema & Entregável | Status |
-|---|---|---|
-| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18: Projeto Pandas/NumPy com ER real do GATE4 | ✅ Concluído |
-| `notebooks/guia-01-sql-pandas-ml/` | Guia 1: SQL → Pandas → ML: EDA, NumPy e visualizações | ✅ Concluído |
-| `notebooks/guia-02-series-temporais/` | Guia 2: Séries Temporais, resample, rolling e leakage | ✅ Concluído |
-| `notebooks/guia-03-fastapi-docker/` | Guia 3: FastAPI + Docker: API de risco de churn | ✅ Concluído |
+| Pasta | Guia | Tema | Status |
+|---|---|---|---|
+| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18 | Projeto Pandas/NumPy com ER real do GATE4 | ✅ Concluído |
+| `notebooks/guia-01-sql-pandas-ml/` | Guia 1 | SQL → Pandas → ML: EDA, NumPy e visualizações | ✅ Concluído |
+| `notebooks/guia-02-series-temporais/` | Guia 2 | Séries Temporais, resample, rolling e leakage temporal | ✅ Concluído |
+| `notebooks/guia-03-fastapi-docker/` | Guia 3 | FastAPI + Docker: API de risco de churn em container | ✅ Concluído |
 
 ---
 
 ## 🧪 Testes Automatizados
+
+Suíte completa de testes unitários e de integração com `pytest`, cobrindo todos os módulos do pipeline:
+
+| Arquivo | Cobertura |
+|---|---|
+| `tests/test_g18_m3_financeiro.py` | Módulo financeiro — faturamento e aging |
+| `tests/test_g18_m4_m5_manejo.py` | Operação e manejo animal |
+| `tests/test_g18_m6_m7_estoque_alunos.py` | Estoque, RFM e early warning de churn |
+| `tests/test_g18_pipeline.py` | Integração end-to-end do pipeline completo |
+| `tests/test_smoke_basico.py` | Sanidade e fumaça básicos |
+| `tests/test_smoke.py` | Fumaça estrutural do projeto |
 
 ```bash
 pip install -r requirements.txt
@@ -139,11 +162,11 @@ git clone https://github.com/alesina78/gate4-data-platform.git
 cd gate4-data-platform
 
 python -m venv .venv
-source .venv/Scripts/activate
+source .venv/Scripts/activate    # Git Bash / Windows
 
 pip install -r requirements.txt
 
-# Pipeline completo (M0 -> M8)
+# Pipeline completo (M0 → M8)
 python src/gate4/g18_pipeline.py
 
 # Módulo individual
@@ -154,10 +177,10 @@ python src/gate4/g18_m3_financeiro.py
 
 ## 📁 Estrutura do Repositório
 
-```text
+```
 gate4-data-platform/
 │
-├── src/gate4/                          # Módulos de produção do pipeline M0 a M8 + ML Churn
+├── src/gate4/                          # Módulos de produção (M0–M8 + ML Churn)
 │   ├── g18_m0_gerador.py
 │   ├── g18_m1_qualidade.py
 │   ├── g18_m2_limpeza.py
@@ -169,23 +192,27 @@ gate4-data-platform/
 │   ├── g18_pipeline.py
 │   └── g18_guia1_churn.py
 │
-├── notebooks/                          # Cadernos de estudo organizados por guia da apostila
+├── notebooks/                          # Cadernos de estudo — trilha da apostila
 │   ├── guia-01-sql-pandas-ml/          # Guia 1: SQL → Pandas → ML
 │   ├── guia-02-series-temporais/       # Guia 2: Séries temporais, rolling, leakage
 │   ├── guia-03-fastapi-docker/         # Guia 3: FastAPI + Docker
 │   └── guia-18-projeto-pandas-numpy/   # Guia 18: Laboratório do ER real GATE4
 │
-├── scripts/                            # Utilitários, benchmarks e laboratórios práticos
+├── scripts/                            # Utilitários, protótipos e benchmarks
 │   ├── g10_churn_project.py
 │   ├── g16_performance.py
 │   ├── generators_G18_1.py
-│   ├── Guia 11_teste_ab.py             # Laboratório de Estatística Aplicada & Testes A/B
-│   ├── Guia 16C benchmark_pandas.py    # Engine de benchmark real (SQL para Pandas)
 │   └── README.md
 │
 ├── modelos/                            # Artefatos serializados (.joblib)
+│   ├── churn_v1.joblib
+│   └── modelo_churn_gate4.joblib
+│
 ├── docs/                               # Documentação e anotações técnicas
-├── data/processed/                     # Camada Gold/Staging Parquet (no .gitignore)
+│   ├── Anotacoes.sql
+│   ├── ARQUITETURA.md
+│   └── DIAGNOSTICO_GATE4.md
+│
 ├── saidas/                             # 7 visualizações PNG geradas pelo pipeline
 │   ├── 01_hist_dias_atraso.png
 │   ├── 02_boxplot_mensalidade_plano.png
@@ -195,14 +222,15 @@ gate4-data-platform/
 │   ├── 06_matriz_confusao.png
 │   └── 07_curva_precision_recall.png
 │
-├── tests/                              # Suíte de testes automatizados (pytest)
-│   ├── test_g18_m3_financeiro.py       # Testes unitários do módulo financeiro
-│   ├── test_g18_m4_m5_manejo.py        # Testes unitários de manejo e operação
-│   ├── test_g18_m6_m7_estoque_alunos.py# Testes de estoque e alunos/churn
-│   ├── test_g18_pipeline.py            # Teste de integração end-to-end do pipeline
-│   ├── test_smoke_basico.py            # Testes de sanidade e fumaça básicos
-│   └── test_smoke.py                   # Teste de fumaça estrutural do projeto
+├── tests/                              # Suíte pytest (unitários + integração)
+│   ├── test_g18_m3_financeiro.py
+│   ├── test_g18_m4_m5_manejo.py
+│   ├── test_g18_m6_m7_estoque_alunos.py
+│   ├── test_g18_pipeline.py
+│   ├── test_smoke_basico.py
+│   └── test_smoke.py
 │
+├── .github/workflows/python-tests.yml  # CI — executa pytest a cada push
 ├── pyproject.toml
 └── README.md
 ```
@@ -210,8 +238,9 @@ gate4-data-platform/
 ---
 
 ## 👤 Autor
-**Alessandro Giordano**  
-Senior Data Engineer & Analytics Specialist | 25+ anos em TI Corporativa  
+
+**Alessandro Giordano**
+Senior Data Engineer & Analytics Specialist | 25+ anos em TI Corporativa
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-alessandrolesina-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alessandrolesina/)
 [![GitHub](https://img.shields.io/badge/GitHub-alesina78-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/alesina78)
