@@ -171,52 +171,21 @@ gate4-data-platform/
 │
 ├── notebooks/                          # Cadernos de estudo organizados por guia da apostila
 │   ├── guia-01-sql-pandas-ml/          # Guia 1: SQL → Pandas → ML
-│   │   ├── ex07_numpy_fundamentos.py
-│   │   ├── ex08_eda_completo_gate4.py
-│   │   ├── ex09_visualizacoes_avancadas.py
-│   │   └── README.md
-│   │
 │   ├── guia-02-series-temporais/       # Guia 2: Séries temporais, rolling, leakage
-│   │   ├── ex01_sql_para_pandas.py
-│   │   ├── ex02_leakage_temporal.py
-│   │   ├── ex03_previsao_faturamento_gate4.py
-│   │   └── README.md
-│   │
 │   ├── guia-03-fastapi-docker/         # Guia 3: FastAPI + Docker
-│   │   ├── ex04_treinar_pipeline_churn.py
-│   │   ├── ex05_fastapi_app.py
-│   │   ├── ex06_testes_api.py
-│   │   └── README.md
-│   │
 │   └── guia-18-projeto-pandas-numpy/   # Guia 18: Laboratório do ER real GATE4
-│       ├── 01_teste_pandas.py
-│       ├── 02_series_temporais_pandas.py
-│       ├── 03_numpy_eda_visualizacao.py
-│       ├── 04_machine_learning_churn.py
-│       └── README.md
 │
-├── scripts/                            # Utilitários e experimentos
+├── scripts/                            # Utilitários, benchmarks e laboratórios práticos
 │   ├── g10_churn_project.py
 │   ├── g16_performance.py
 │   ├── generators_G18_1.py
+│   ├── Guia 11_teste_ab.py             # Laboratório de Estatística Aplicada & Testes A/B
 │   ├── Guia 16C benchmark_pandas.py    # Engine de benchmark real (SQL para Pandas)
 │   └── README.md
 │
 ├── modelos/                            # Artefatos serializados (.joblib)
-│   ├── churn_v1.joblib
-│   └── modelo_churn_gate4.joblib
-│
 ├── docs/                               # Documentação e anotações técnicas
-│   ├── Anotacoes.sql
-│   ├── ARQUITETURA.md
-│   └── DIAGNOSTICO_GATE4.md
-│
 ├── data/processed/                     # Camada Gold/Staging Parquet (no .gitignore)
-│   ├── alunos.parquet
-│   ├── alunos_risco_churn.parquet
-│   ├── cavalos_tratados.parquet
-│   └── relatorio_qualidade.parquet
-│
 ├── saidas/                             # 7 visualizações PNG geradas pelo pipeline
 │   ├── 01_hist_dias_atraso.png
 │   ├── 02_boxplot_mensalidade_plano.png
@@ -227,6 +196,13 @@ gate4-data-platform/
 │   └── 07_curva_precision_recall.png
 │
 ├── tests/                              # Suíte de testes automatizados (pytest)
+│   ├── test_g18_m3_financeiro.py       # Testes unitários do módulo financeiro
+│   ├── test_g18_m4_m5_manejo.py        # Testes unitários de manejo e operação
+│   ├── test_g18_m6_m7_estoque_alunos.py# Testes de estoque e alunos/churn
+│   ├── test_g18_pipeline.py            # Teste de integração end-to-end do pipeline
+│   ├── test_smoke_basico.py            # Testes de sanidade e fumaça básicos
+│   └── test_smoke.py                   # Teste de fumaça estrutural do projeto
+│
 ├── pyproject.toml
 └── README.md
 ```
