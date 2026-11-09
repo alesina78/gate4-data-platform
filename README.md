@@ -31,15 +31,15 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     GATE4 Data Platform                      │
+│                     GATE4 Data Platform                     │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
 │  M0      │  M1      │  M2      │  M3–M7   │  M8             │
 │ Gerador  │Qualidade │ Limpeza  │Analytics │ Orquestração    │
-│Sintético │          │          │          │                  │
+│Sintético │          │          │          │                 │
 ├──────────┴──────────┴──────────┴──────────┴─────────────────┤
-│            Persistência em Parquet  (staging → gold)         │
+│            Persistência em Parquet  (staging → gold)        │
 ├─────────────────────────────────────────────────────────────┤
-│          ML · Churn Prediction  (HistGradientBoosting)       │
+│          ML · Churn Prediction  (HistGradientBoosting)      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
