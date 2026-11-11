@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guia 19: Passo a Passo — VS Code, Python e o Projeto GATE4 Data Platform</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f7fb;--card:#fff;--tx:#1d2330;--mut:#5b6475;--code:#101626;--codetx:#e8ecf7;
+--sql:#1f6feb;--sqlb:#e3eeff;--pd:#12805c;--pdb:#dcf5ea;--warn:#d1242f;--warnb:#ffe3e5;--tip:#a86400;--tipb:#fff1cf;--biz:#7b3fe4;--bizb:#efe5ff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171e2e;--tx:#e8ecf7;--mut:#9aa5bd;--code:#0a0e18;
+--sql:#6ea8ff;--sqlb:#14264a;--pd:#4fd1a0;--pdb:#0f3326;--warn:#ff7b84;--warnb:#3d1519;--tip:#ffc85a;--tipb:#3a2c0a;--biz:#b392ff;--bizb:#2a1d4d}}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#171e2e;--tx:#e8ecf7;--mut:#9aa5bd;--code:#0a0e18;
+--sql:#6ea8ff;--sqlb:#14264a;--pd:#4fd1a0;--pdb:#0f3326;--warn:#ff7b84;--warnb:#3d1519;--tip:#ffc85a;--tipb:#3a2c0a;--biz:#b392ff;--bizb:#2a1d4d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:1.7rem;margin:.4em 0}
+.step{background:var(--card);border-radius:12px;padding:6px 16px 10px;margin:16px 0;border-left:6px solid var(--pd);box-shadow:0 1px 3px #0002}
+.step h2{font-size:1.15rem;margin:.5em 0 .3em}.n{display:inline-block;background:var(--pd);color:#fff;border-radius:99px;padding:0 10px;margin-right:6px}
+.box{border-left:5px solid;border-radius:8px;padding:6px 12px;margin:8px 0}
+.sql{background:var(--sqlb);border-color:var(--sql)}.pd{background:var(--pdb);border-color:var(--pd)}
+.warn{background:var(--warnb);border-color:var(--warn)}.tip{background:var(--tipb);border-color:var(--tip)}.biz{background:var(--bizb);border-color:var(--biz)}
+.tag{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.sql .tag{color:var(--sql)}.pd .tag{color:var(--pd)}.warn .tag{color:var(--warn)}.tip .tag{color:var(--tip)}.biz .tag{color:var(--biz)}
+pre{background:var(--code);color:var(--codetx);padding:10px 12px;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.45;margin:6px 0}
+code{font-family:ui-monospace,Consolas,monospace}kbd{background:var(--sqlb);color:var(--sql);border-radius:5px;padding:1px 6px;font-weight:700;font-size:.85em}
+.c{color:#8b95ad}
+.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{padding:6px 10px;border:1px solid var(--mut);text-align:left;vertical-align:top}
+th{background:var(--sqlb);color:var(--sql)}
+.leg span{display:inline-block;margin:3px 6px 3px 0;padding:3px 10px;border-radius:99px;font-size:.85rem;font-weight:600}
+</style></head><body><main>
+<h1>🧭 Guia 19 — Passo a passo: do zero ao primeiro script do GATE4 Data Platform</h1>
+<p>Para quem fez as aulas mas nunca montou o ambiente. Cada passo diz <b>o que é</b>, <b>onde abrir</b> e <b>como executar</b>. Exemplos em <b>Windows (PowerShell)</b>; o equivalente de Linux/Mac vem em comentário.</p>
+<div class="leg"><span style="background:var(--sqlb);color:var(--sql)">🔵 Conceito/atalho</span><span style="background:var(--pdb);color:var(--pd)">🟢 Faça isto</span><span style="background:var(--warnb);color:var(--warn)">🔴 Cuidado</span><span style="background:var(--tipb);color:var(--tip)">🟡 Dica</span><span style="background:var(--bizb);color:var(--biz)">🟣 Mercado</span></div>
+
+<div class="box sql"><span class="tag">As ferramentas e para que servem</span>
+<div class="tbl"><table><tr><th>Ferramenta</th><th>Papel</th></tr>
+<tr><td><b>VS Code</b></td><td>Editor onde você escreve e organiza o código, com terminal embutido.</td></tr>
+<tr><td><b>Python + venv</b></td><td>A linguagem e uma "caixa" isolada de bibliotecas só deste projeto (como um schema próprio no banco).</td></tr>
+<tr><td><b>pip</b></td><td>Instala bibliotecas (pandas, numpy…) dentro do venv.</td></tr>
+<tr><td><b>Notebook (.ipynb)</b></td><td>Para explorar e testar ideias célula a célula. O pipeline de verdade vai em arquivos <code>.py</code>.</td></tr>
+<tr><td><b>Git/GitHub</b></td><td>Histórico das mudanças e o seu portfólio público.</td></tr>
+<tr><td><b>pytest</b></td><td>Roda os testes automatizados.</td></tr></table></div></div>
+
+<div class="step"><h2><span class="n">1</span>Instalar e conferir</h2>
+<p><b>Onde:</b> <b>python.org</b> (Python 3.11 ou mais novo; na instalação marque <b>"Add Python to PATH"</b>), <b>code.visualstudio.com</b> (VS Code) e <b>git-scm.com</b> (Git). Depois abra o <b>PowerShell</b> (menu Iniciar → digite "PowerShell") e confira:</p>
+<pre>python --version        <span class="c"># ou: py --version   (Linux/Mac: python3 --version)</span>
+git --version
+code --version</pre>
+<div class="box pd"><b>Deu número de versão nos três?</b> Então está pronto. Se aparecer "não é reconhecido", veja a tabela de problemas no final.</div>
+<p><b>Extensões do VS Code:</b> clique no ícone de quadradinhos à esquerda (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), procure e instale <b>Python</b> e <b>Jupyter</b> (ambas da Microsoft).</p></div>
+
+<div class="step"><h2><span class="n">2</span>Criar a pasta do projeto e abrir no VS Code</h2>
+<div class="box warn"><span class="tag">Regra de ouro</span> Crie o projeto <b>fora</b> da pasta do GATE4. Assim o sistema em produção fica intocado.</div>
+<pre>mkdir C:\Projetos\gate4-data-platform
+cd C:\Projetos\gate4-data-platform
+code .                  <span class="c"># abre o VS Code nesta pasta</span></pre>
+<p>Sem o comando <code>code</code>: abra o VS Code → <b>File → Open Folder…</b> → escolha a pasta. Quando perguntar "Do you trust the authors?", clique em <b>Yes</b>.</p></div>
+
+<div class="step"><h2><span class="n">3</span>Terminal integrado, ambiente virtual e interpretador</h2>
+<p><b>Abrir o terminal dentro do VS Code:</b> menu <b>Terminal → New Terminal</b> ou <kbd>Ctrl</kbd>+<kbd>`</kbd>. Ele já abre na pasta do projeto.</p>
+<pre>python -m venv .venv                  <span class="c"># cria a caixa isolada (uma vez só)</span>
+.venv\Scripts\Activate.ps1            <span class="c"># ativa (Linux/Mac: source .venv/bin/activate)</span></pre>
+<p>Quando ativar, aparece <code>(.venv)</code> no começo da linha do terminal.</p>
+<div class="box warn"><span class="tag">Erro comum no Windows</span> "a execução de scripts foi desabilitada": rode uma vez <code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code> e tente ativar de novo.</div>
+<p><b>Dizer ao VS Code qual Python usar:</b> <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> → digite <b>Python: Select Interpreter</b> → escolha o que termina em <code>.venv</code>. (Se ele pedir, aceite a sugestão de usar o ambiente da pasta.) Depois disso, todo terminal novo ativa o venv sozinho.</p></div>
+
+<div class="step"><h2><span class="n">4</span>Instalar só o que precisa agora</h2>
+<pre>python -m pip install --upgrade pip
+pip install pandas numpy pyarrow matplotlib pytest ipykernel
+pip freeze &gt; requirements.txt       <span class="c"># registra as versões instaladas</span></pre>
+<div class="box biz"><span class="tag">Por quê só isso</span> O projeto introduz tecnologia aos poucos: SQLAlchemy/psycopg2 (ler Postgres), Docker, dbt e Airflow só entram quando houver necessidade.</div></div>
+
+<div class="step"><h2><span class="n">5</span>Estrutura de pastas, pyproject e .gitignore</h2>
+<pre>mkdir src\gate4, tests, notebooks, data\raw, data\processed
+ni src\gate4\__init__.py              <span class="c"># arquivo vazio (Linux/Mac: touch; mkdir -p)</span></pre>
+<p>Crie (<b>File → New File</b>) o arquivo <code>pyproject.toml</code> na raiz:</p>
+<pre>[build-system]
+requires = ["setuptools&gt;=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gate4"
+version = "0.1.0"
+requires-python = "&gt;=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]</pre>
+<pre>pip install -e .                      <span class="c"># deixa "import gate4" funcionar em qualquer lugar do projeto</span></pre>
+<p>Crie o <code>.gitignore</code> (raiz) com:</p>
+<pre>.venv/
+__pycache__/
+.ipynb_checkpoints/
+data/
+.env
+*.parquet</pre>
+<div class="box warn"><span class="tag">Importante</span> <code>data/</code> e <code>.env</code> nunca vão para o GitHub: dados e senhas ficam só na sua máquina.</div></div>
+
+<div class="step"><h2><span class="n">6</span>Git e GitHub</h2>
+<pre>git config --global user.name "Seu Nome"
+git config --global user.email "seu@email.com"
+git init
+git add .
+git commit -m "Estrutura inicial do projeto"
+git branch -M main</pre>
+<p><b>Onde criar o repositório online:</b> em <b>github.com → New repository</b>, nome <code>gate4-data-platform</code>, sem marcar README. Depois copie os dois comandos que o GitHub mostra:</p>
+<pre>git remote add origin https://github.com/SEU_USUARIO/gate4-data-platform.git
+git push -u origin main</pre>
+<div class="box tip"><span class="tag">Hábito</span> Faça um <code>commit</code> a cada tarefa pequena. Mensagens curtas e claras, como "Adiciona gerador de empresas". Recrutadores olham o histórico.</div></div>
+
+<div class="step"><h2><span class="n">7</span>Executar código: três jeitos (e quando usar cada um)</h2>
+<p>Primeiro um <b>teste de fumaça</b> para confirmar que tudo funciona. Crie <code>src\gate4\smoke.py</code>:</p>
+<pre>import numpy as np, pandas as pd
+
+rng = np.random.default_rng(42)
+df = pd.DataFrame({"id": range(1, 6), "valor": rng.integers(100, 500, 5)})
+print(df)</pre>
+<div class="tbl"><table><tr><th>Jeito</th><th>Como</th><th>Use para</th></tr>
+<tr><td><b>A. Botão ▶</b></td><td>Abra o arquivo e clique em <b>▶ Run Python File</b> (canto superior direito).</td><td>Rodar rápido enquanto escreve.</td></tr>
+<tr><td><b>B. Terminal</b></td><td><code>python -m gate4.smoke</code></td><td><b>O jeito do projeto</b>: reproduzível por qualquer pessoa.</td></tr>
+<tr><td><b>C. Notebook</b></td><td>File → New File → <b>Jupyter Notebook</b>; salve em <code>notebooks\</code>; escolha o kernel <b>.venv</b> (canto superior direito); rode a célula com <kbd>Shift</kbd>+<kbd>Enter</kbd>.</td><td>Explorar dados e testar ideias.</td></tr></table></div>
+<div class="box pd">Viu a tabela com 5 linhas no terminal? <b>Seu ambiente está funcionando.</b></div></div>
+
+<div class="step"><h2><span class="n">8</span>Testes com pytest</h2>
+<p>Crie <code>tests\test_smoke.py</code>:</p>
+<pre>def test_soma():
+    assert 1 + 1 == 2</pre>
+<pre>pytest                                <span class="c"># no terminal, na raiz do projeto</span></pre>
+<p>Ou pelo VS Code: ícone do <b>frasco</b> (Testing) à esquerda → <b>Configure Python Tests</b> → <b>pytest</b> → pasta <code>tests</code>. Verde = passou.</p></div>
+
+<div class="step"><h2><span class="n">9</span>Etapa 1 do projeto: diagnóstico do GATE4 real</h2>
+<p>Antes de planejar o pipeline, reúna o que existe. Reúna, <b>sem alterar nada</b>, e me envie:</p>
+<div class="tbl"><table><tr><th>O que enviar</th><th>Como obter</th></tr>
+<tr><td>Estrutura de pastas</td><td>Na pasta do GATE4: <code>Get-ChildItem -Recurse -Depth 2 -Name</code> (Linux: <code>find . -maxdepth 2 -not -path "./.git*"</code>)</td></tr>
+<tr><td><code>models.py</code> do app <code>gateagora</code></td><td>Abra o arquivo no VS Code e copie o conteúdo.</td></tr>
+<tr><td>Lista de migrations</td><td>Só os <b>nomes</b> dos arquivos em <code>gateagora\migrations\</code>.</td></tr>
+<tr><td>Trecho <code>DATABASES</code> do <code>settings.py</code></td><td>Copie e <b>apague senha, usuário e host</b> antes de enviar.</td></tr>
+<tr><td>Versões</td><td><code>python --version</code> · <code>pip show django</code> · no banco: <code>SELECT version();</code></td></tr>
+<tr><td><code>requirements.txt</code> do GATE4</td><td>Na raiz do GATE4.</td></tr></table></div>
+<div class="box warn"><span class="tag">Preserve a produção</span> Não rode <code>migrate</code>, <code>flush</code> ou qualquer comando que escreva no banco real. Nunca envie <code>SECRET_KEY</code>, senhas, tokens ou tabelas <code>auth_*</code>.</div></div>
+
+<div class="step"><h2><span class="n">10</span>Dados reais: só depois, e em cópia</h2>
+<p>Comece pelos <b>dados sintéticos</b> (Guia 18, módulo M0), que não tocam em nada. Quando for usar dados reais, trabalhe numa <b>cópia local</b>, nunca direto na produção:</p>
+<pre>pg_dump -h SEU_HOST -U SEU_USUARIO -d SEU_BANCO -Fc -f gate4.dump   <span class="c"># só lê o banco</span>
+createdb gate4_copia
+pg_restore -d gate4_copia gate4.dump</pre>
+<p>Anonimize nome e telefone <b>apenas na cópia</b>, e nunca publique esses dados. Faça isso somente depois de analisarmos e você decidir.</p></div>
+
+<div class="step"><h2>🛠️ Problemas comuns</h2>
+<div class="tbl"><table><tr><th>Mensagem/sintoma</th><th>O que fazer</th></tr>
+<tr><td><code>'python' não é reconhecido</code></td><td>Reinstale marcando "Add to PATH" ou use <code>py</code> no lugar de <code>python</code>; feche e reabra o terminal.</td></tr>
+<tr><td><code>ModuleNotFoundError: pandas</code></td><td>O venv não está ativo ou o VS Code usa outro interpretador: ative <code>.venv</code> e refaça "Select Interpreter".</td></tr>
+<tr><td><code>No module named gate4</code></td><td>Rode <code>pip install -e .</code> na raiz, com o venv ativo.</td></tr>
+<tr><td>Notebook sem kernel</td><td>Canto superior direito → "Select Kernel" → Python Environments → <code>.venv</code>.</td></tr>
+<tr><td>Acentos quebrados em CSV</td><td>Use <code>encoding="utf-8"</code> ao ler e gravar.</td></tr>
+<tr><td><code>git push</code> pede login</td><td>Entre pelo navegador (Git Credential Manager) ou use um token do GitHub como senha.</td></tr></table></div></div>
+
+<div class="box tip"><span class="tag">As 6 etapas, uma por vez</span> ① Diagnóstico (passo 9) → ② Planejamento → ③ Implementação (tarefas pequenas, você escreve, eu reviso) → ④ Qualidade e testes → ⑤ Portfólio (README em português e inglês, diagrama) → ⑥ Evolução (dbt, Airflow, nuvem, churn). Só avance quando a etapa atual estiver validada.</div>
+</main></body></html>

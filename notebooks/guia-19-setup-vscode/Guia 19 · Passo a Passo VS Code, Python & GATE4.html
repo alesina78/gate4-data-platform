@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia 19 · Interactive Setup: VS Code, Python & GATE4</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gateDark: '#0b1120',
+                        gateCard: '#1e293b',
+                        gateBorder: '#334155',
+                        gateAccent: '#3b82f6',
+                        gateGreen: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- Top Header Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="bg-blue-600/20 text-blue-400 border border-blue-500/30 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">Trilha A</span>
+                <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <span>Guia 19</span>
+                    <span class="text-slate-500">•</span>
+                    <span class="text-slate-300 font-normal">Setup VS Code, Python & GATE4</span>
+                </h1>
+            </div>
+            
+            <!-- Progress Counter -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex flex-col items-end">
+                    <span class="text-xs text-slate-400 font-medium">Progresso do Guia</span>
+                    <span id="progress-percentage" class="text-sm font-bold text-emerald-400">0%</span>
+                </div>
+                <div class="w-32 bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+                <button onclick="resetProgress()" class="text-xs text-slate-500 hover:text-rose-400 transition-colors p-1" title="Resetar progresso">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- Sidebar Navigation Tabs -->
+        <aside class="lg:col-span-3 space-y-2">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sticky top-20">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 py-2">Módulos da Aula</p>
+                <nav class="space-y-1" id="tab-nav">
+                    <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-medium rounded-lg text-blue-400 bg-blue-500/10 border border-blue-500/20 transition-all">
+                        <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                        <span>Visão Geral & Meta</span>
+                    </button>
+                    <button onclick="switchTab('tab-environment')" id="btn-tab-environment" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                        <i class="fa-solid fa-laptop-code w-5 text-center"></i>
+                        <span>1. VS Code & Python</span>
+                    </button>
+                    <button onclick="switchTab('tab-venv')" id="btn-tab-venv" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                        <i class="fa-solid fa-box-archive w-5 text-center"></i>
+                        <span>2. Git, venv & Configs</span>
+                    </button>
+                    <button onclick="switchTab('tab-code')" id="btn-tab-code" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                        <i class="fa-solid fa-vial w-5 text-center"></i>
+                        <span>3. Código & Pytest</span>
+                    </button>
+                    <button onclick="switchTab('tab-terminal')" id="btn-tab-terminal" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
+                        <i class="fa-solid fa-terminal w-5 text-center"></i>
+                        <span>4. Validação Interativa</span>
+                    </button>
+                </nav>
+
+                <!-- Project Architecture Preview Box -->
+                <div class="mt-6 pt-4 border-t border-slate-800 px-3">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Estrutura Alvo</p>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-emerald-400 leading-relaxed overflow-x-auto custom-scrollbar">
+                        gate4-data-platform/<br>
+                        ├── .gitignore<br>
+                        ├── requirements.txt<br>
+                        ├── .vscode/<br>
+                        │   └── settings.json<br>
+                        ├── src/<br>
+                        │   ├── __init__.py<br>
+                        │   └── config.py<br>
+                        └── tests/<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;├── __init__.py<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;└── test_config.py
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="lg:col-span-9 space-y-6">
+
+            <!-- TAB 1: OVERVIEW -->
+            <section id="tab-overview" class="tab-content block space-y-6">
+                <div class="bg-gradient-to-r from-blue-900/30 via-slate-900 to-slate-900 border border-blue-500/20 rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-blue-400 text-9xl">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <div class="relative z-10 space-y-3">
+                        <span class="bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-500/30">Ambiente GATE4</span>
+                        <h2 class="text-2xl font-bold text-white">Objetivo Prático do Guia 19</h2>
+                        <p class="text-slate-300 text-sm leading-relaxed max-w-2xl">
+                            Nesta aula, você construirá a base profissional da plataforma de engenharia de dados <strong>GATE4</strong>. O foco é preparar um repositório padronizado com interpretador Python 3.11+, isolamento por ambiente virtual (<code>venv</code>), suíte automatizada de testes com <code>pytest</code> e versionamento Git.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Deliverable Card -->
+                <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center space-x-3 text-emerald-400">
+                        <i class="fa-solid fa-circle-check text-xl"></i>
+                        <h3 class="text-lg font-bold text-white">Entregável Esperado</h3>
+                    </div>
+                    <p class="text-slate-300 text-sm">
+                        Um repositório totalmente funcional chamado <code class="text-emerald-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">gate4-data-platform</code> rodando suíte de testes com sucesso.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                            <span class="text-blue-400 font-bold text-sm">1. Isolamento Completo</span>
+                            <p class="text-xs text-slate-400">Dependências isoladas sem poluir o Python global do sistema.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                            <span class="text-emerald-400 font-bold text-sm">2. Qualidade & Testes</span>
+                            <p class="text-xs text-slate-400">Configuração pronta do Pytest executando em `tests/`.</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                            <span class="text-purple-400 font-bold text-sm">3. Padrão de Engenharia</span>
+                            <p class="text-xs text-slate-400">Repositório com `.gitignore`, `.vscode` e commit inicial limpo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Interactive Checklist -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center justify-between">
+                        <span>Checklist do Aluno</span>
+                        <span class="text-xs font-normal text-slate-400">Marque conforme conclui os passos</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-1" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Validar instalação do Python 3.11+ no sistema.</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-2" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Instalar extensões do VS Code (Python, Pylance, Ruff).</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-3" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Criar pasta do projeto e repositório local Git (`git init`).</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-4" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Criar e ativar o ambiente virtual (`.venv`).</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-5" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Criar `.gitignore` e instalar dependências (`requirements.txt`).</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-6" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Implementar `src/config.py` e testes em `tests/test_config.py`.</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700 transition-colors">
+                            <input type="checkbox" data-task="task-7" onchange="toggleTask(this)" class="mt-1 h-4 w-4 rounded border-slate-700 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-sm text-slate-300">Executar `pytest` com 100% de aprovação e realizar commit no Git.</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ENVIRONMENT -->
+            <section id="tab-environment" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="border-b border-slate-800 pb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="bg-blue-600/20 text-blue-400 p-2 rounded-lg text-sm"><i class="fa-solid fa-code"></i></span>
+                            1. Verificação do Interpretador Python & IDE
+                        </h2>
+                        <p class="text-slate-400 text-sm mt-1">Garantindo a versão correta do ecossistema e extensões fundamentais no VS Code.</p>
+                    </div>
+
+                    <!-- Python Verification -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-slate-200">Passo 1.1 — Checar versão do Python</h3>
+                        <p class="text-xs text-slate-400">Abra o seu terminal (Bash, PowerShell ou Zsh) e execute o comando abaixo para confirmar a versão do Python:</p>
+                        <div class="relative bg-slate-950 rounded-xl p-4 border border-slate-800">
+                            <button onclick="copyCode('code-python-version')" class="absolute top-3 right-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded transition-colors flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                            <pre id="code-python-version" class="text-xs text-blue-300"># Linux / macOS:
+python3 --version
+
+# Windows (PowerShell / Command Prompt):
+python --version</pre>
+                        </div>
+                    </div>
+
+                    <!-- Recommended VS Code Extensions Table -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-slate-200">Passo 1.2 — Extensões Obrigatórias no VS Code</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300 border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                        <th class="p-3">Extensão</th>
+                                        <th class="p-3">Publicador</th>
+                                        <th class="p-3">Função na Plataforma GATE4</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr class="hover:bg-slate-800/30">
+                                        <td class="p-3 font-semibold text-blue-400">Python</td>
+                                        <td class="p-3">Microsoft</td>
+                                        <td class="p-3">Suporte ao ecossistema Python, suporte para depuração e seleção de venv.</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30">
+                                        <td class="p-3 font-semibold text-blue-400">Pylance</td>
+                                        <td class="p-3">Microsoft</td>
+                                        <td class="p-3">Verificação estática de tipos de altíssima performance e autocompletar inteligente.</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-800/30">
+                                        <td class="p-3 font-semibold text-blue-400">Ruff / Flake8</td>
+                                        <td class="p-3">Astral / PyCQA</td>
+                                        <td class="p-3">Linter de código para apontar violações dos padrões de estilo PEP 8 em tempo real.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: VENV & GIT -->
+            <section id="tab-venv" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="border-b border-slate-800 pb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="bg-emerald-600/20 text-emerald-400 p-2 rounded-lg text-sm"><i class="fa-solid fa-folder-tree"></i></span>
+                            2. Repositório, Virtualenv & Dependências
+                        </h2>
+                        <p class="text-slate-400 text-sm mt-1">Criação do diretório raiz, isolamento do ambiente Python e controle de versão Git.</p>
+                    </div>
+
+                    <!-- Shell Commands Block -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold text-slate-200">Comandos de Inicialização (Execute em ordem)</h3>
+                        <div class="relative bg-slate-950 rounded-xl p-4 border border-slate-800">
+                            <button onclick="copyCode('code-terminal-init')" class="absolute top-3 right-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded transition-colors flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i> Copiar Script
+                            </button>
+                            <pre id="code-terminal-init" class="text-xs text-emerald-300"># 1. Criar o diretório do projeto e subpastas da estrutura
+mkdir gate4-data-platform
+cd gate4-data-platform
+mkdir src tests .vscode
+
+# 2. Inicializar repositório Git
+git init
+
+# 3. Criar ambiente virtual
+# Linux/macOS:
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Windows (PowerShell):
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1</pre>
+                        </div>
+                    </div>
+
+                    <!-- Gitignore & Requirements -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Gitignore -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-300 block">Arquivo: <code class="text-blue-400">.gitignore</code></span>
+                            <div class="relative bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <button onclick="copyCode('code-gitignore')" class="absolute top-2 right-2 text-xs text-slate-400 hover:text-white">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                                <pre id="code-gitignore" class="text-xs text-slate-300">.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.DS_Store</pre>
+                            </div>
+                        </div>
+
+                        <!-- Requirements -->
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-300 block">Arquivo: <code class="text-blue-400">requirements.txt</code></span>
+                            <div class="relative bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <button onclick="copyCode('code-requirements')" class="absolute top-2 right-2 text-xs text-slate-400 hover:text-white">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                                <pre id="code-requirements" class="text-xs text-slate-300">pandas>=2.0.0
+numpy>=1.24.0
+pytest>=7.3.0
+python-dotenv>=1.0.0</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VS Code Settings -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-semibold text-slate-300 block">Configuração da Workspace: <code class="text-blue-400">.vscode/settings.json</code></span>
+                        <div class="relative bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <button onclick="copyCode('code-vscode-settings')" class="absolute top-2 right-2 text-xs text-slate-400 hover:text-white">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            <pre id="code-vscode-settings" class="text-xs text-purple-300">{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "editor.formatOnSave": true
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: CODE & TEST -->
+            <section id="tab-code" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="border-b border-slate-800 pb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="bg-purple-600/20 text-purple-400 p-2 rounded-lg text-sm"><i class="fa-solid fa-file-code"></i></span>
+                            3. Implementação dos Módulos Python & Pytest
+                        </h2>
+                        <p class="text-slate-400 text-sm mt-1">Crie o pacote da aplicação e sua respectiva suíte de testes unitários automatizados.</p>
+                    </div>
+
+                    <!-- src/config.py -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-semibold text-slate-200">3.1 Módulo Principal — <code class="text-emerald-400">src/config.py</code></span>
+                            <button onclick="copyCode('code-src-config')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <pre id="code-src-config" class="text-xs text-slate-200">"""
+Módulo de configurações centrais da plataforma GATE4.
+"""
+import os
+
+class GATE4Config:
+    PROJECT_NAME: str = "GATE4 Data Platform"
+    ENV: str = os.getenv("GATE4_ENV", "development")
+    DATA_PATH: str = os.getenv("GATE4_DATA_PATH", "./data")
+
+    @classmethod
+    def get_status(cls) -> dict:
+        return {
+            "project": cls.PROJECT_NAME,
+            "environment": cls.ENV,
+            "status": "ready"
+        }</pre>
+                        </div>
+                    </div>
+
+                    <!-- tests/test_config.py -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-semibold text-slate-200">3.2 Suíte de Testes — <code class="text-emerald-400">tests/test_config.py</code></span>
+                            <button onclick="copyCode('code-test-config')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded">
+                                <i class="fa-regular fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <pre id="code-test-config" class="text-xs text-emerald-300">from src.config import GATE4Config
+
+def test_gate4_config_default_values():
+    """Valida se as configurações padrão do GATE4 estão corretas."""
+    assert GATE4Config.PROJECT_NAME == "GATE4 Data Platform"
+    assert GATE4Config.ENV == "development"
+
+def test_gate4_status_structure():
+    """Valida o retorno do método get_status."""
+    status = GATE4Config.get_status()
+    assert isinstance(status, dict)
+    assert status["status"] == "ready"</pre>
+                        </div>
+                    </div>
+
+                    <!-- Command to run tests -->
+                    <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                        <span class="text-xs font-semibold text-slate-400 block">Comando para Rodar Testes & Commit:</span>
+                        <pre class="text-xs text-blue-400"># Executar a suíte de testes com Pytest
+pytest
+
+# Após ver os testes passando (PASSED), faça o commit inicial:
+git add .
+git commit -m "feat: setup inicial do ambiente GATE4 com venv e pytest"</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: TERMINAL / INTERACTIVE TEST -->
+            <section id="tab-terminal" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="border-b border-slate-800 pb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="bg-emerald-600/20 text-emerald-400 p-2 rounded-lg text-sm"><i class="fa-solid fa-terminal"></i></span>
+                            4. Validação Interativa do Setup
+                        </h2>
+                        <p class="text-slate-400 text-sm mt-1">Simulador interativo para testar se você absorveu os comandos e conceitos do Guia 19.</p>
+                    </div>
+
+                    <!-- Terminal Interactive Simulator -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
+                        <!-- Terminal Top Bar -->
+                        <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                                <span class="text-xs font-mono text-slate-400 ml-2">bash — gate4-data-platform</span>
+                            </div>
+                            <span class="text-xs text-slate-500">GATE4 Interactive CLI</span>
+                        </div>
+                        
+                        <!-- Terminal Body -->
+                        <div id="terminal-screen" class="p-4 font-mono text-xs text-slate-200 h-64 overflow-y-auto space-y-2 custom-scrollbar">
+                            <p class="text-slate-500">GATE4 Verification Terminal v1.0.0</p>
+                            <p class="text-slate-400">Digite um comando válido (ex: <code class="text-amber-400">pytest</code>, <code class="text-amber-400">python -m venv .venv</code>, <code class="text-amber-400">git status</code>, <code class="text-amber-400">help</code>) e pressione Enter:</p>
+                        </div>
+
+                        <!-- Terminal Input Bar -->
+                        <form onsubmit="handleTerminalSubmit(event)" class="border-t border-slate-800 flex items-center bg-slate-900 px-4 py-2">
+                            <span class="text-emerald-400 font-mono text-xs mr-2 font-bold">(.venv) gate4-platform $</span>
+                            <input type="text" id="terminal-input" class="flex-1 bg-transparent text-xs font-mono text-white focus:outline-none" placeholder="Digite seu comando..." autocomplete="off">
+                            <button type="submit" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded">Enviar</button>
+                        </form>
+                    </div>
+
+                    <!-- Quick Quiz -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-question text-blue-400"></i>
+                            Quiz Rápido de Fixação
+                        </h3>
+
+                        <div class="space-y-3" id="quiz-container">
+                            <p class="text-xs text-slate-300">1. Qual arquivo garante que diretórios binários como <code class="text-emerald-400">.venv/</code> e caches não sejam commitados no Git?</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                <button onclick="answerQuiz(this, false)" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:border-slate-700 text-left">A) requirements.txt</button>
+                                <button onclick="answerQuiz(this, true)" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:border-slate-700 text-left">B) .gitignore</button>
+                                <button onclick="answerQuiz(this, false)" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:border-slate-700 text-left">C) settings.json</button>
+                                <button onclick="answerQuiz(this, false)" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 hover:border-slate-700 text-left">D) __init__.py</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white text-xs px-4 py-3 rounded-xl shadow-lg border border-emerald-400 flex items-center space-x-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Código copiado com sucesso!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Tab Switch Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-blue-400', 'bg-blue-500/10', 'border', 'border-blue-500/20');
+                el.classList.add('text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('text-blue-400', 'bg-blue-500/10', 'border', 'border-blue-500/20');
+            activeBtn.classList.remove('text-slate-400');
+        }
+
+        // Copy Code Logic
+        function copyCode(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Código copiado para a área de transferência!");
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Progress Tracking with LocalStorage
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[data-task]');
+            const total = checkboxes.length;
+            let checkedCount = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const percent = Math.round((checkedCount / total) * 100);
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-percentage').innerText = percent + '%';
+        }
+
+        function toggleTask(checkbox) {
+            const taskId = checkbox.getAttribute('data-task');
+            localStorage.setItem(taskId, checkbox.checked);
+            updateProgress();
+        }
+
+        function loadSavedProgress() {
+            const checkboxes = document.querySelectorAll('input[data-task]');
+            checkboxes.forEach(cb => {
+                const taskId = cb.getAttribute('data-task');
+                const saved = localStorage.getItem(taskId);
+                if (saved === 'true') {
+                    cb.checked = true;
+                }
+            });
+            updateProgress();
+        }
+
+        function resetProgress() {
+            if (confirm("Deseja redefinir todo o seu progresso neste guia?")) {
+                const checkboxes = document.querySelectorAll('input[data-task]');
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    localStorage.removeItem(cb.getAttribute('data-task'));
+                });
+                updateProgress();
+                showToast("Progresso redefinido!");
+            }
+        }
+
+        // Interactive Terminal Simulation
+        function handleTerminalSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('terminal-input');
+            const screen = document.getElementById('terminal-screen');
+            const cmd = input.value.trim().toLowerCase();
+
+            if (!cmd) return;
+
+            // Print Command Line
+            const cmdLine = document.createElement('p');
+            cmdLine.className = 'text-blue-400';
+            cmdLine.innerHTML = `<span class="text-emerald-400">(.venv) $</span> ${escapeHtml(input.value)}`;
+            screen.appendChild(cmdLine);
+
+            // Respond based on command
+            const output = document.createElement('div');
+            output.className = 'text-slate-300 ml-2 space-y-1';
+
+            if (cmd === 'pytest') {
+                output.innerHTML = `
+                    <p class="text-slate-400">======================== test session starts ========================</p>
+                    <p class="text-emerald-400">tests/test_config.py .. <span class="text-slate-200">[100%]</span></p>
+                    <p class="text-emerald-400 font-bold">========================= 2 passed in 0.04s =========================</p>
+                `;
+            } else if (cmd.includes('venv')) {
+                output.innerHTML = `<p class="text-emerald-400">✓ Ambiente virtual (.venv) criado com sucesso!</p>`;
+            } else if (cmd === 'git status') {
+                output.innerHTML = `
+                    <p>On branch main</p>
+                    <p>nothing to commit, working tree clean</p>
+                `;
+            } else if (cmd === 'help') {
+                output.innerHTML = `<p class="text-amber-300">Comandos disponíveis: pytest, python -m venv .venv, git status, clear</p>`;
+            } else if (cmd === 'clear') {
+                screen.innerHTML = '';
+                input.value = '';
+                return;
+            } else {
+                output.innerHTML = `<p class="text-rose-400">Comando não reconhecido no simulador. Tente: 'pytest', 'git status', ou 'help'</p>`;
+            }
+
+            screen.appendChild(output);
+            screen.scrollTop = screen.scrollHeight;
+            input.value = '';
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Quiz Handling
+        function answerQuiz(btn, isCorrect) {
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('bg-emerald-600', 'bg-rose-600', 'border-emerald-500', 'border-rose-500');
+                b.disabled = true;
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-600', 'border-emerald-500', 'text-white');
+                showToast("Resposta Correta! O .gitignore impede o envio de binários.");
+            } else {
+                btn.classList.add('bg-rose-600', 'border-rose-500', 'text-white');
+                showToast("Incorreto. A resposta certa é o arquivo .gitignore.");
+            }
+        }
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedProgress();
+        });
+    </script>
+</body>
+</html>
