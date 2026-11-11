@@ -11,7 +11,7 @@
 -- Arquivo de referência com TODOS os models SQL do projeto dbt GATE4.
 -- Na prática, cada bloco abaixo é um arquivo .sql separado na estrutura:
 --
---   gate4_dbt/models/
+--   gate4_dbt/models/a
 --     sources.yml
 --     staging/
 --       stg_alunos.sql
