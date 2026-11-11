@@ -1,7 +1,7 @@
 # 🐎 GATE4 Data Platform
 
 > **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.  
-> Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → dbt Analytics Engineering → SQL Avançado → Estatística Aplicada → Machine Learning.
+> Pipeline end-to-end: setup de ambiente → geração sintética → qualidade → limpeza → análise financeira/operacional → dbt Analytics Engineering → SQL Avançado → Estatística Aplicada → Machine Learning.
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![dbt](https://img.shields.io/badge/dbt-Core-FF694B?style=flat-square&logo=dbt&logoColor=white)](https://www.getdbt.com/)
@@ -82,13 +82,15 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ## 🔬 Laboratórios Práticos & Benchmarks
 
-Além do pipeline principal, a pasta `scripts/` e a pasta `notebooks/` abrigam suítes avançadas de validação estatística, modelagem dbt e SQL avançado para entrevistas:
+Além do pipeline principal, a pasta `scripts/` e a pasta `notebooks/` abrigam suítes avançadas de validação estatística, modelagem dbt, laboratório de ER do GATE4 e SQL avançado para entrevistas:
 
 | Script / Guia | Foco & Descrição |
 |---|---|
 | `scripts/g10_churn_project.py` | Protótipo inicial do modelo de churn (versão anterior ao pipeline de produção) |
 | `scripts/g16_performance.py` | Benchmarks: vetorização vs loop, otimização de memória, Parquet vs CSV, DuckDB |
 | `scripts/generators_G18_1.py` | Gerador auxiliar usado durante o desenvolvimento do M0 |
+| `notebooks/guia-19-setup-vscode/` | **Guia 19:** Passo a passo interativo de setup do ambiente (VS Code, Python, venv, pytest, Git) |
+| `notebooks/guia-18-projeto-pandas-numpy/` | **Guias 18A, 18B, 18C:** Exploração do ER real (17 tabelas), laboratório de dados sintéticos (M0) e plano de projeto |
 | `notebooks/guia-13-sql-entrevistas/` | **Guia 13:** 8 padrões SQL de entrevistas (Top-N, Gaps & Islands, Coorte, NOT EXISTS vs NOT IN) |
 | `notebooks/guia-15-dbt-analytics/` | **Guia 15:** Projeto dbt Core com camada de staging, marts, testes schema e singulares |
 
@@ -134,7 +136,8 @@ Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Anal
 
 | Pasta | Guia | Tema | Status |
 |---|---|---|---|
-| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18 | Projeto Pandas/NumPy com ER real do GATE4 | ✅ Concluído |
+| `notebooks/guia-19-setup-vscode/` | Guia 19 | Setup Passo a Passo: VS Code, Python, venv, pytest e Git | ✅ Concluído |
+| `notebooks/guia-18-projeto-pandas-numpy/` | Guia 18 | Laboratório ER GATE4 (18A), Gerador Sintético (18B) e Plano M0–M8 (18C) | ✅ Concluído |
 | `notebooks/guia-01-sql-pandas-ml/` | Guia 1 | SQL → Pandas → ML: EDA, NumPy e visualizações | ✅ Concluído |
 | `notebooks/guia-02-series-temporais/` | Guia 2 | Séries Temporais, resample, rolling e leakage temporal | ✅ Concluído |
 | `notebooks/guia-03-fastapi-docker/` | Guia 3 | FastAPI + Docker: API de risco de churn em container | ✅ Concluído |
@@ -208,7 +211,8 @@ gate4-data-platform/
 │   ├── guia-06-airflow/                # Guia 6: Orquestração com Apache Airflow
 │   ├── guia-13-sql-entrevistas/        # Guia 13: SQL Avançado (8 Padrões Oracle/PG, Tuning)
 │   ├── guia-15-dbt-analytics/          # Guia 15: dbt Analytics Engineering (Staging, Marts, Testes)
-│   └── guia-18-projeto-pandas-numpy/   # Guia 18: Laboratório do ER real GATE4
+│   ├── guia-18-projeto-pandas-numpy/   # Guia 18 (18A/18B/18C): ER real, gerador M0 e plano M0–M8
+│   └── guia-19-setup-vscode/           # Guia 19: Setup interativo de ambiente e Git
 │
 ├── scripts/                            # Utilitários, protótipos e benchmarks
 │   ├── g10_churn_project.py
