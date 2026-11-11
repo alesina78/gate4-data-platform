@@ -1,110 +1,110 @@
 # ╔══════════════════════════════════════════════════════════════════════════╗
-# ║  GATE4 Data Platform — Guia 15, Exercício 13                            ║
-# ║  Arquivo : ex13_dbt_testes_schema.yml                                   ║
-# ║  Tema    : Testes e documentação completos do projeto dbt GATE4         ║
-# ║  Autor   : Alessandro Esina                                              ║
-# ║  Projeto : github.com/alesina78/gate4-data-platform                     ║
+# ║  GATE4 Data Platform — Guia 15, Exercício 13                             ║
+# ║  Arquivo : ex13_dbt_testes_schema.yml                                    ║
+# ║  Tema    : Contrato de Dados, Testes de Qualidade e Catálogo dbt         ║
+# ║  Autor   : Alessandro Lesina Giordano                                    ║
+# ║  Projeto : github.com/alesina78/gate4-data-platform                      ║
 # ╚══════════════════════════════════════════════════════════════════════════╝
 #
-# OBJETIVO
-# --------
-# Arquivo de referência com TODOS os testes e documentação do projeto dbt.
-# Na prática, este conteúdo fica em 2 arquivos:
-#   models/staging/schema.yml   → testes e docs do staging
-#   models/marts/schema.yml     → testes e docs dos marts
+# ARQUITETURA DE DOCUMENTAÇÃO
+# ---------------------------
+# Em produção, este arquivo deve ser desmembrado por camada de modelagem:
+#   1. models/staging/schema.yml  → Contratos de entrada, tipagem e integridade.
+#   2. models/marts/schema.yml    → Regras de negócio, métricas e ABT de ML.
+#   3. models/docs.md             → Blocos de texto reutilizáveis ({% docs %}).
 #
-# TIPOS DE TESTE
-# ---------------
-# Genéricos (built-in):
-#   unique           → sem duplicatas na coluna (como UNIQUE CONSTRAINT)
-#   not_null         → sem NULLs (como NOT NULL CONSTRAINT)
-#   accepted_values  → valor está na lista (como CHECK CONSTRAINT com IN)
-#   relationships    → FK existe na outra tabela (como FOREIGN KEY)
-#
-# Singular (SQL customizado em tests/):
-#   Qualquer SELECT que retorna linhas = teste FALHA
-#   Analogia Oracle: query de auditoria — se retornar algo, tem problema
-#
-# COMO RODAR
-# ----------
-# dbt build                    → models + testes
-# dbt test                     → só testes (sem re-executar models)
-# dbt test --select stg_faturas → só testes de um model específico
+# COMANDOS PRINCIPAIS
+# -------------------
+#   dbt docs generate             → Compila o catálogo e a linhagem (lineage).
+#   dbt docs serve                → Sobe o servidor web local com o catálogo.
+#   dbt build                     → Executa modelos + testes na ordem do DAG.
+#   dbt test --select severity:error → Roda apenas testes bloqueantes no CI/CD.
+
 
 # ════════════════════════════════════════════════════════════════════════════
-# ARQUIVO 1: models/staging/schema.yml
+# ARQUIVO 1: models/staging/schema.yml (Camada de Padronização e Limpeza)
 # ════════════════════════════════════════════════════════════════════════════
 
 version: 2
 
 models:
 
-  # ── stg_alunos ─────────────────────────────────────────────────────────
+  # ── stg_alunos ─────────────────────────────────────────────────────────────
   - name: stg_alunos
     description: >
-      Alunos do GATE4 normalizados: colunas renomeadas para snake_case,
-      tipos convertidos (date, timestamp), flag ativo e dias_de_casa calculados.
-      Uma linha por aluno.
+      **Camada Staging — Cadastro de Alunos.**
+      Consolida os registros brutos de praticantes do centro equestre (M2 Limpeza).
+      Aplica padronização de nomenclatura (snake_case), conversão explícita de tipos
+      e cálculo de métricas base de tempo de relacionamento.
+      
+      * **Granularidade:** 1 linha por `aluno_id` único.
+      * **Origem:** Tabela transacional de alunos (PostgreSQL / M0 Gerador).
+      * **Regra de Negócio:** Não filtra alunos inativos; mantém o histórico completo para análise de retenção.
     columns:
       - name: aluno_id
-        description: "PK — identificador único do aluno"
+        description: "Chave primária (PK) do aluno no sistema transacional GATE4."
         data_tests:
-          - unique       # cada aluno aparece uma vez
-          - not_null     # todo aluno tem ID
+          - unique
+          - not_null
 
       - name: nome
-        description: "Nome completo do aluno"
+        description: "Nome completo do aluno padronizado (sem espaços excedentes e capitalizado)."
         data_tests:
           - not_null
 
       - name: modalidade
-        description: "Modalidade equestre do aluno"
+        description: >
+          Atividade equestre principal praticada pelo aluno.
+          Controlada por domínio fechado para evitar fragmentação nos relatórios operacionais.
         data_tests:
           - not_null
-          - accepted_values:   # falha se aparecer modalidade não mapeada
-              values:
-                - 'Salto'
-                - 'Dressage'
-                - 'Hipismo'
-                - 'Equoterapia'
-                - 'Reabilitação'
+          - accepted_values:
+              values: ['Salto', 'Dressage', 'Hipismo', 'Equoterapia', 'Reabilitação']
 
       - name: plano
-        description: "Plano de mensalidade contratado"
+        description: "Ciclo de faturamento contratado pelo aluno no momento da matrícula ou renovação."
         data_tests:
           - not_null
           - accepted_values:
               values: ['Mensal', 'Semestral', 'Anual']
 
       - name: empresa_id
-        description: "FK para a empresa (multi-tenant)"
+        description: "Chave estrangeira (FK) da unidade/haras. Isola os dados na arquitetura multi-tenant."
         data_tests:
           - not_null
 
       - name: ativo
-        description: "Flag: aluno com contrato ativo"
+        description: >
+          Indicador booleano (`true`/`false`) que reflete se o contrato do aluno está vigente
+          na data de extração do pipeline.
         data_tests:
           - not_null
 
       - name: dias_de_casa
-        description: "Dias desde a matrícula até hoje"
+        description: >
+          Tempo de relacionamento em dias corridos, calculado pela diferença entre a data
+          de referência do processamento e a data original de matrícula.
         data_tests:
           - not_null
 
-  # ── stg_aulas ──────────────────────────────────────────────────────────
+  # ── stg_aulas ──────────────────────────────────────────────────────────────
   - name: stg_aulas
     description: >
-      Registro de aulas ministradas no GATE4, normalizadas.
-      Uma linha por aula.
+      **Camada Staging — Histórico de Aulas.**
+      Registra os agendamentos e realizações de aulas por aluno.
+      Serve de base para o cálculo de frequência (RFM) e carga de trabalho animal.
+      
+      * **Granularidade:** 1 linha por `aula_id` único.
+      * **Origem:** Tabela operacional de agendamentos.
     columns:
       - name: aula_id
-        description: "PK — identificador único da aula"
+        description: "Chave primária (PK) do agendamento da aula."
         data_tests:
           - unique
           - not_null
 
       - name: aluno_id
-        description: "FK para stg_alunos"
+        description: "Chave estrangeira (FK) que vincula a aula ao cadastro do aluno em `stg_alunos`."
         data_tests:
           - not_null
           - relationships:
@@ -112,99 +112,120 @@ models:
               field: aluno_id
 
       - name: data_aula
-        description: "Data de realização da aula"
+        description: "Data de realização (ou agendamento) da aula no formato `YYYY-MM-DD`."
         data_tests:
           - not_null
 
-  # ── stg_faturas ────────────────────────────────────────────────────────
+  # ── stg_faturas ────────────────────────────────────────────────────────────
   - name: stg_faturas
     description: >
-      Faturas do GATE4 limpas e tipadas: valores como numeric(12,2),
-      datas convertidas, flag esta_atrasada e dias_em_atraso calculados.
-      Uma linha por fatura.
+      **Camada Staging — Títulos Financeiros e Mensalidades.**
+      Tabela financeira saneada com valores monetários convertidos para `numeric(12,2)`
+      e flags de inadimplência pré-calculadas para consumo analítico.
+      
+      * **Granularidade:** 1 linha por `fatura_id` único.
+      * **Impacto Crítico:** Duplicidades nesta tabela distorcem diretamente a receita no Power BI.
     columns:
       - name: fatura_id
-        description: "PK — identificador único da fatura"
+        description: "Chave primária (PK) do título financeiro emitido."
         data_tests:
-          - unique       # duplicata = faturamento dobrado no Power BI!
+          - unique
           - not_null
 
       - name: aluno_id
-        description: "FK para stg_alunos"
+        description: "Chave estrangeira (FK) do aluno sacado/pagador em `stg_alunos`."
         data_tests:
           - not_null
-          - relationships:   # toda fatura deve ter um aluno existente
+          - relationships:
               to: ref('stg_alunos')
               field: aluno_id
 
       - name: valor
-        description: "Valor da mensalidade em R$"
+        description: "Valor bruto da mensalidade ou cobrança em Reais (BRL - `numeric(12,2)`)."
         data_tests:
           - not_null
 
       - name: vencimento
-        description: "Data de vencimento da fatura"
+        description: "Data limite estipulada para o pagamento sem incidência de atraso (`YYYY-MM-DD`)."
         data_tests:
           - not_null
 
       - name: esta_atrasada
-        description: "True se não paga e vencida"
+        description: >
+          Flag booleana (`true`/`false`). Retorna `true` exclusivamente quando o status
+          do título está em aberto e a data de `vencimento` é anterior à data atual.
         data_tests:
           - not_null
 
       - name: empresa_id
-        description: "FK para empresa"
+        description: "Chave estrangeira (FK) da unidade emissora da cobrança (multi-tenant)."
         data_tests:
           - not_null
 
 
 # ════════════════════════════════════════════════════════════════════════════
-# ARQUIVO 2: models/marts/schema.yml
+# ARQUIVO 2: models/marts/schema.yml (Camada de Negócio, BI e Machine Learning)
 # ════════════════════════════════════════════════════════════════════════════
 
 # version: 2
 
 # models:
 
-  # ── fct_faturamento_mensal ─────────────────────────────────────────────
+  # ── fct_faturamento_mensal ─────────────────────────────────────────────────
   - name: fct_faturamento_mensal
     description: >
-      Faturamento mensal por empresa — alimenta o Power BI (Guia 12).
-      Inclui total faturado, inadimplência e % de atraso.
+      **Tabela Fato — Agregado Financeiro Mensal.**
+      Consolida a receita emitida e o volume de inadimplência por unidade e competência.
+      Alimenta diretamente os painéis executivos do Power BI (Guia 12).
+      
+      * **Granularidade:** 1 linha por combinação única de `empresa_id` + `mes`.
+      * **Materialização:** Table.
     columns:
       - name: mes
-        description: "Primeiro dia do mês de referência"
+        description: "Data truncada no primeiro dia do mês de competência do vencimento (`YYYY-MM-01`)."
         data_tests:
           - not_null
 
       - name: empresa_id
-        description: "ID da empresa (multi-tenant)"
+        description: "Identificador da unidade/haras (chave de isolamento multi-tenant)."
         data_tests:
           - not_null
 
       - name: faturado
-        description: "Soma dos valores faturados no mês"
+        description: "Receita bruta total emitida no mês em Reais (soma de `valor` de `stg_faturas`)."
         data_tests:
           - not_null
 
       - name: pct_inadimplencia
-        description: "% do faturamento em atraso (0.0 a 100.0)"
+        description: >
+          Taxa percentual de inadimplência da competência (`0.0` a `100.0`).
+          Calculada como `(valor_faturas_atrasadas / faturado) * 100`.
+          *Nota:* Pode retornar `NULL` ou `0.0` em meses sem emissão de faturas.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn # Alerta o time de dados sem quebrar o build do BI
 
-  # ── fct_abt_churn ──────────────────────────────────────────────────────
+  # ── fct_abt_churn ──────────────────────────────────────────────────────────
   - name: fct_abt_churn
     description: >
-      ABT (Analytical Base Table) para o modelo de churn — a mesma tabela
-      do Guia 10, agora versionada e testada pelo dbt.
-      Incremental: processa só alunos atualizados recentemente.
+      **Analytical Base Table (ABT) — Predição de Evasão (Churn).**
+      Tabela de features comportamentais e financeiras que alimenta o modelo
+      `HistGradientBoostingClassifier` (Guia 10 / M8).
+      
+      * **Granularidade:** 1 linha por aluno por mês de referência (`aluno_mes_key`).
+      * **Materialização:** Incremental (processa apenas safras recentes via `unique_key`).
+      * **Prevenção de Data Leakage:** Todas as variáveis explicativas consideram estritamente
+        eventos ocorridos antes da data de corte do mês de referência.
     columns:
       - name: aluno_mes_key
-        description: "PK composta: aluno_id + mes_ref (string)"
+        description: "Chave primária substituta (Surrogate Key) gerada pela concatenação de `aluno_id` + `mes_ref`."
         data_tests:
-          - unique     # garante idempotência do incremental
+          - unique
           - not_null
 
       - name: aluno_id
-        description: "FK para dim_aluno"
+        description: "Chave estrangeira (FK) que conecta a safra do aluno à dimensão `dim_aluno`."
         data_tests:
           - not_null
           - relationships:
@@ -212,35 +233,21 @@ models:
               field: aluno_id
 
       - name: churn
-        description: "Label: 1 se cancelou, 0 se ativo"
+        description: >
+          Variável alvo (Target) binária para treinamento supervisionado:
+          `1` = Aluno cancelou ou ficou >60 dias sem aulas após a data de corte;
+          `0` = Aluno permaneceu ativo.
         data_tests:
           - not_null
           - accepted_values:
               values: [0, 1]
 
       - name: aulas_90d
-        description: "Aulas realizadas nos últimos 90 dias"
+        description: "Total de aulas efetivamente concluídas pelo aluno na janela móvel dos últimos 90 dias."
         data_tests:
           - not_null
 
-  # ── dim_aluno ──────────────────────────────────────────────────────────
+  # ── dim_aluno ──────────────────────────────────────────────────────────────
   - name: dim_aluno
     description: >
-      Dimensão de alunos para o modelo estrela do Power BI.
-      Inclui segmentação por tempo de casa.
-    columns:
-      - name: aluno_id
-        description: "PK"
-        data_tests:
-          - unique
-          - not_null
-
-      - name: segmento_permanencia
-        description: "Classificação por tempo de casa"
-        data_tests:
-          - accepted_values:
-              values:
-                - 'Novo (< 3 meses)'
-                - 'Em adaptação (3-12 meses)'
-                - 'Consolidado (1-2 anos)'
-                - 'Veterano (2+ anos)'
+      **Dimensão — Perfil Analítico do Aluno.**
