@@ -1,10 +1,11 @@
 # 🐎 GATE4 Data Platform
 
 > **Plataforma de Engenharia de Dados & Analytics** aplicada à gestão inteligente de centros equestres, ecoterapia e reabilitação.  
-> Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → dbt Analytics Engineering → Estatística Aplicada → Machine Learning.
+> Pipeline end-to-end: geração sintética → qualidade → limpeza → análise financeira/operacional → dbt Analytics Engineering → SQL Avançado → Estatística Aplicada → Machine Learning.
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![dbt](https://img.shields.io/badge/dbt-Core-FF694B?style=flat-square&logo=dbt&logoColor=white)](https://www.getdbt.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=flat-square&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.x-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
 [![Pytest](https://img.shields.io/badge/Testes-pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)](https://pytest.org/)
@@ -68,6 +69,7 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 | **M6 · Estoque** | `src/gate4/g18_m6_estoque.py` | Dias de cobertura de insumos, prevenção de divisão por zero e alertas de ruptura |
 | **M7 · Alunos & RFM** | `src/gate4/g18_m7_alunos.py` | Alunos em risco de churn (>60 dias sem frequência) e métricas RFM |
 | **dbt Analytics** | `notebooks/guia-15-dbt-analytics/` | Modelagem dbt (staging, marts, incremental), testes de integridade e testes singulares em SQL |
+| **SQL Avançado** | `notebooks/guia-13-sql-entrevistas/` | 8 Padrões SQL avançados (Oracle vs PostgreSQL), tuning de queries, janelas analíticas e simulador |
 
 ### Camada de Orquestração & ML
 
@@ -80,13 +82,15 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 
 ## 🔬 Laboratórios Práticos & Benchmarks
 
-Além do pipeline principal, a pasta `scripts/` abriga suítes avançadas de validação estatística e benchmarks de performance:
+Além do pipeline principal, a pasta `scripts/` e a pasta `notebooks/` abrigam suítes avançadas de validação estatística, modelagem dbt e SQL avançado para entrevistas:
 
-| Script | Foco & Descrição |
+| Script / Guia | Foco & Descrição |
 |---|---|
 | `scripts/g10_churn_project.py` | Protótipo inicial do modelo de churn (versão anterior ao pipeline de produção) |
 | `scripts/g16_performance.py` | Benchmarks: vetorização vs loop, otimização de memória, Parquet vs CSV, DuckDB |
 | `scripts/generators_G18_1.py` | Gerador auxiliar usado durante o desenvolvimento do M0 |
+| `notebooks/guia-13-sql-entrevistas/` | **Guia 13:** 8 padrões SQL de entrevistas (Top-N, Gaps & Islands, Coorte, NOT EXISTS vs NOT IN) |
+| `notebooks/guia-15-dbt-analytics/` | **Guia 15:** Projeto dbt Core com camada de staging, marts, testes schema e singulares |
 
 ---
 
@@ -135,6 +139,7 @@ Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Anal
 | `notebooks/guia-02-series-temporais/` | Guia 2 | Séries Temporais, resample, rolling e leakage temporal | ✅ Concluído |
 | `notebooks/guia-03-fastapi-docker/` | Guia 3 | FastAPI + Docker: API de risco de churn em container | ✅ Concluído |
 | `notebooks/guia-06-airflow/` | Guia 6 | Orquestração de workflows com Apache Airflow | ✅ Concluído |
+| `notebooks/guia-13-sql-entrevistas/` | Guia 13 | SQL Avançado para Entrevistas (8 Padrões Oracle/PG, Tuning) | ✅ Concluído |
 | `notebooks/guia-15-dbt-analytics/` | Guia 15 | Analytics Engineering com dbt (Staging, Marts, Testes) | ✅ Concluído |
 
 ---
@@ -196,12 +201,13 @@ gate4-data-platform/
 │   ├── g18_pipeline.py
 │   └── g18_guia1_churn.py
 │
-├── notebooks/                          # Cadernos de estudo — trilha da apostila
+├── notebooks/                          # Cadernos de estudo — trilha de transição
 │   ├── guia-01-sql-pandas-ml/          # Guia 1: SQL → Pandas → ML
 │   ├── guia-02-series-temporais/       # Guia 2: Séries temporais, rolling, leakage
 │   ├── guia-03-fastapi-docker/         # Guia 3: FastAPI + Docker
 │   ├── guia-06-airflow/                # Guia 6: Orquestração com Apache Airflow
-│   ├── guia-15-dbt-analytics/          # Guia 15: dbt Analytics Engineering
+│   ├── guia-13-sql-entrevistas/        # Guia 13: SQL Avançado (8 Padrões Oracle/PG, Tuning)
+│   ├── guia-15-dbt-analytics/          # Guia 15: dbt Analytics Engineering (Staging, Marts, Testes)
 │   └── guia-18-projeto-pandas-numpy/   # Guia 18: Laboratório do ER real GATE4
 │
 ├── scripts/                            # Utilitários, protótipos e benchmarks
@@ -219,7 +225,7 @@ gate4-data-platform/
 │   ├── ARQUITETURA.md
 │   └── DIAGNOSTICO_GATE4.md
 │
-├── saidas/                             # 7 visualizações PNG geradas pelo pipeline
+├── saidas/                             # Visualizações PNG geradas pelo pipeline
 │   ├── 01_hist_dias_atraso.png
 │   ├── 02_boxplot_mensalidade_plano.png
 │   ├── 03_barras_atraso_plano.png
