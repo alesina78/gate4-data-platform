@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guia 18A — Explorador do ER do GATE4</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f7fb;--card:#fff;--tx:#1d2330;--mut:#5b6475;--code:#101626;--codetx:#e8ecf7;
+--sql:#1f6feb;--sqlb:#e3eeff;--pd:#12805c;--pdb:#dcf5ea;--warn:#d1242f;--warnb:#ffe3e5;--tip:#a86400;--tipb:#fff1cf;--biz:#7b3fe4;--bizb:#efe5ff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171e2e;--tx:#e8ecf7;--mut:#9aa5bd;--code:#0a0e18;
+--sql:#6ea8ff;--sqlb:#14264a;--pd:#4fd1a0;--pdb:#0f3326;--warn:#ff7b84;--warnb:#3d1519;--tip:#ffc85a;--tipb:#3a2c0a;--biz:#b392ff;--bizb:#2a1d4d}}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#171e2e;--tx:#e8ecf7;--mut:#9aa5bd;--code:#0a0e18;
+--sql:#6ea8ff;--sqlb:#14264a;--pd:#4fd1a0;--pdb:#0f3326;--warn:#ff7b84;--warnb:#3d1519;--tip:#ffc85a;--tipb:#3a2c0a;--biz:#b392ff;--bizb:#2a1d4d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:1.7rem;margin:.4em 0}h2{font-size:1.25rem;margin:1.8em 0 .4em;padding-bottom:.2em;border-bottom:3px solid var(--pd)}
+.box{border-left:5px solid;border-radius:8px;padding:8px 14px;margin:10px 0}
+.sql{background:var(--sqlb);border-color:var(--sql)}.pd{background:var(--pdb);border-color:var(--pd)}.warn{background:var(--warnb);border-color:var(--warn)}.tip{background:var(--tipb);border-color:var(--tip)}.biz{background:var(--bizb);border-color:var(--biz)}
+.tag{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.lab{background:var(--card);border-radius:14px;padding:12px 16px;box-shadow:0 1px 4px #0002;margin:10px 0}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.kp div{background:var(--card);border-radius:12px;padding:8px;text-align:center;font-size:.8rem;color:var(--mut)}.kp b{display:block;font-size:1.6rem;color:var(--sql)}
+.chips button{font:inherit;font-size:.82rem;font-weight:700;border:2px solid;border-radius:99px;padding:2px 12px;margin:2px;cursor:pointer;background:var(--card);color:var(--tx)}
+.chips button.off{opacity:.35}
+svg{width:100%;height:auto}svg text{fill:var(--tx);font:12px system-ui;pointer-events:none}
+.nd{cursor:pointer}.nd rect{stroke-width:2;rx:8;fill:var(--card)}.nd.dim{opacity:.18}.nd.sel rect{stroke-width:4}
+.eg{stroke:var(--mut);stroke-width:1.6;fill:none}.eg.hl{stroke:var(--biz);stroke-width:3}.eg.dim{opacity:.1}
+table{border-collapse:collapse;width:100%;font-size:.82rem}th,td{padding:4px 8px;border:1px solid var(--mut);text-align:left;vertical-align:top}th{background:var(--sqlb);color:var(--sql)}
+.tw{overflow-x:auto}.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.bd{display:inline-block;padding:0 7px;border-radius:99px;font-size:.72rem;font-weight:700;margin-left:3px}
+.pk{background:var(--tipb);color:var(--tip)}.fk{background:var(--bizb);color:var(--biz)}.uq{background:var(--pdb);color:var(--pd)}.nl{background:var(--warnb);color:var(--warn)}
+select,button.bt{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--mut);border-radius:8px;padding:3px 8px}
+button.bt{background:var(--sql);color:#fff;border:none;font-weight:700;cursor:pointer;padding:3px 12px}
+pre{background:var(--code);color:var(--codetx);padding:10px 12px;border-radius:8px;overflow-x:auto;font-size:.8rem;line-height:1.45;margin:6px 0}
+.hb{display:grid;grid-template-columns:150px 1fr;gap:6px;align-items:center;margin:3px 0;font-size:.82rem}.hb i{display:block;height:18px;border-radius:5px;background:var(--sql);font:700 .72rem/18px system-ui;color:#fff;padding-left:6px;font-style:normal}
+tr.nm td{background:var(--warnb);color:var(--warn);font-weight:700}
+.q{margin:10px 0}.q button{display:block;width:100%;text-align:left;margin:3px 0;background:var(--bg);color:var(--tx);border:1px solid var(--mut);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}
+.ck label{display:block;padding:4px 8px;margin:3px 0;background:var(--bg);border-radius:8px}.bar{height:12px;background:var(--bg);border:1px solid var(--mut);border-radius:99px;overflow:hidden}.bar div{height:100%;background:var(--pd);width:0}
+</style></head><body><main>
+<h1>🗺️ Guia 18A — Explorador do ER do GATE4</h1>
+<p>Tudo nesta página vem <b>do arquivo de ER que você enviou</b>: 17 tabelas, colunas e chaves reais, sem nada inventado. Clique nas tabelas, filtre por módulo e rode os laboratórios.</p>
+<div class="box warn"><span class="tag">Por que reescrevi</span> A versão anterior citava colunas que <b>não existem</b> (<code>aluno.email</code>, <code>itemestoque.unidade_medida</code>; o real é <code>unidade</code>), cobria só 4 das 17 tabelas e exibia "complexidade" com percentuais inventados. Aqui os números são <b>calculados do seu esquema</b>.</div>
+
+<h2>1. O modelo em números (calculados do ER)</h2>
+<div class="kp" id="kp"></div>
+
+<h2>2. Diagrama interativo</h2>
+<div class="lab"><div class="chips" id="chips"></div>
+<svg id="dg" viewBox="0 0 900 560"></svg>
+<p style="font-size:.85rem;color:var(--mut)">Linhas = chaves estrangeiras. As ligações com <code>empresa</code> (multiempresa) não são desenhadas para não poluir: elas aparecem como a bolinha ⬤ em quem tem <code>empresa_id</code>. Clique numa tabela para destacá-la e ver as colunas abaixo.</p></div>
+
+<h2>3. Inspetor da tabela</h2>
+<div class="lab"><div style="margin-bottom:6px"><select id="ts"></select> <b id="tn"></b></div>
+<div class="tw"><table id="tt"></table></div><div id="ta"></div></div>
+
+<h2>4. O que o esquema esconde (armadilhas derivadas do ER)</h2>
+<div class="row" id="tr"></div>
+<div class="lab"><b>Tabelas mais conectadas</b> (FKs de entrada + saída, sem contar <code>empresa</code>)<div id="deg"></div></div>
+
+<h2>5. Laboratório: INNER x LEFT JOIN e faturamento</h2>
+<div class="box tip"><b>Preveja:</b> <code>fatura.aluno_id</code> aceita nulo. Se você fizer INNER JOIN com <code>aluno</code>, o faturamento total muda? Teste.</div>
+<div class="lab"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+<label>Junção <select id="jt"><option value="inner">INNER JOIN (fatura → aluno)</option><option value="left">LEFT JOIN (fatura → aluno)</option><option value="lefta">LEFT JOIN (aluno → fatura)</option><option value="outer">FULL OUTER JOIN</option></select></label>
+<label><input type="checkbox" id="orf"> incluir fatura órfã (aluno_id inexistente: só acontece em CSV ou dados sintéticos mal gerados, o FK impede no banco)</label></div>
+<div class="tw"><table id="jr"></table></div><p id="jx"></p><pre id="jc"></pre></div>
+
+<h2>6. Consultas de auditoria (somente SELECT)</h2>
+<div class="box warn"><b>Segurança:</b> rode apenas numa <b>cópia local</b> ou com usuário <b>somente leitura</b>. Nenhuma consulta altera dados. Evite selecionar <code>nome</code> e <code>telefone</code> do aluno.</div>
+<div id="qs"></div>
+
+<h2>7. Fixação</h2>
+<div class="lab" id="quiz"></div>
+<h2>8. Checklist</h2>
+<div class="lab ck"><div class="bar"><div id="pb"></div></div><div id="cl"></div></div>
+<div class="box biz"><span class="tag">Próximo</span> Guia 18B: <b>gerador de dados sintéticos</b> no formato deste ER, e Guia 18C: o <b>plano do projeto</b> com os módulos M0 a M8.</div>
+
+<script>
+const ER={"aluno":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["telefone","varchar",1,0,""],["foto","varchar",0,0,""],["ativo","boolean",1,0,""],["valor_aula","numeric",1,0,""],["empresa_id","bigint",1,0,""],["plano_id","bigint",0,0,""]],"fk":{"empresa_id":"empresa","plano_id":"plano"}},"baia":{"c":[["id","bigint",1,0,""],["numero","varchar",1,0,""],["status","varchar",1,0,""],["empresa_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa"}},"empresa":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["logo","varchar",0,0,""],["cnpj","varchar",0,0,""],["cidade","varchar",1,0,""],["slug","varchar",1,1,""]],"fk":{}},"cavalo":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["categoria","varchar",1,0,""],["status_saude","varchar",1,0,""],["onde_dorme","varchar",1,0,""],["foto","varchar",0,0,""],["raca","varchar",1,0,""],["peso","float8",1,0,""],["fator_atividade","varchar",1,0,""],["tipo_sela","varchar",1,0,""],["tipo_cabecada","varchar",1,0,""],["material_proprio","boolean",1,0,""],["ultima_vacina","date",0,0,""],["ultimo_ferrageamento","date",0,0,""],["ultimo_vermifugo","date",0,0,""],["ultimo_casqueamento","date",0,0,""],["racao_tipo","varchar",1,0,""],["racao_qtd_manha","varchar",1,0,""],["racao_qtd_noite","varchar",1,0,""],["feno_tipo","varchar",1,0,""],["feno_qtd","varchar",1,0,""],["complemento_nutricional","text",1,0,""],["mensalidade_baia","numeric",1,0,""],["baia_id","bigint",0,1,""],["proprietario_id","bigint",1,0,""],["empresa_id","bigint",1,0,""],["piquete_id","bigint",0,0,""],["usa_ferradura","varchar",1,0,""]],"fk":{"piquete_id":"piquete","baia_id":"baia","proprietario_id":"aluno","empresa_id":"empresa"}},"itemestoque":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["quantidade_atual","integer",1,0,""],["alerta_minimo","integer",1,0,""],["unidade","varchar",1,0,""],["fornecedor_contato","varchar",1,0,""],["empresa_id","bigint",1,0,""],["consumo_diario","numeric",0,0,""]],"fk":{"empresa_id":"empresa"}},"movimentacaofinanceira":{"c":[["id","bigint",1,0,""],["descricao","varchar",1,0,""],["valor","numeric",1,0,""],["tipo","varchar",1,0,""],["data","date",1,0,""],["empresa_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa"}},"perfil":{"c":[["id","bigint",1,0,""],["cargo","varchar",1,0,""],["empresa_id","bigint",1,0,""],["user_id","integer",1,1,""],["telefone","varchar",0,0,""]],"fk":{"empresa_id":"empresa","user_id":"auth_user"}},"aula":{"c":[["id","bigint",1,0,""],["data_hora","timestamptz",1,0,""],["local","varchar",1,0,""],["tipo","varchar",1,0,""],["concluida","boolean",1,0,""],["relatorio_treino","text",1,0,""],["aluno_id","bigint",1,0,""],["cavalo_id","bigint",1,0,""],["empresa_id","bigint",1,0,""],["instrutor_id","bigint",0,0,""]],"fk":{"aluno_id":"aluno","cavalo_id":"cavalo","empresa_id":"empresa","instrutor_id":"perfil"}},"piquete":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["capacidade","integer",1,0,""],["status","varchar",1,0,""],["empresa_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa"}},"registroocorrencia":{"c":[["id","bigint",1,0,""],["data","timestamptz",1,0,""],["titulo","varchar",1,0,""],["descricao","text",1,0,""],["foto_evidencia","varchar",0,0,""],["veterinario","varchar",1,0,""],["cavalo_id","bigint",1,0,""]],"fk":{"cavalo_id":"cavalo"}},"documentocavalo":{"c":[["id","bigint",1,0,""],["titulo","varchar",1,0,""],["tipo","varchar",1,0,""],["data_validade","date",1,0,""],["arquivo","varchar",0,0,""],["cavalo_id","bigint",1,0,""]],"fk":{"cavalo_id":"cavalo"}},"eventoagendacavalo":{"c":[["id","bigint",1,0,""],["tipo","varchar",1,0,""],["data_inicio","timestamptz",1,0,""],["data_fim","timestamptz",1,0,""],["observacoes","text",1,0,""],["cavalo_id","bigint",1,0,""]],"fk":{"cavalo_id":"cavalo"}},"fatura":{"c":[["id","bigint",1,0,""],["data_vencimento","date",1,0,""],["valor","numeric",1,0,""],["status","varchar",1,0,""],["data_pagamento","date",0,0,""],["aluno_id","bigint",0,0,""],["empresa_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa","aluno_id":"aluno"}},"plano":{"c":[["id","bigint",1,0,""],["nome","varchar",1,0,""],["valor_mensal","numeric",1,0,""],["descricao","text",1,0,""],["empresa_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa"}},"configprazomanejo":{"c":[["id","bigint",1,0,""],["prazo_vacina","integer",1,0,"prazo_vacina >= 0"],["prazo_vermifugo","integer",1,0,"prazo_vermifugo >= 0"],["prazo_ferrageamento","integer",1,0,"prazo_ferrageamento >= 0"],["prazo_casqueamento","integer",1,0,"prazo_casqueamento >= 0"],["empresa_id","bigint",1,1,""]],"fk":{"empresa_id":"empresa"}},"itemfatura":{"c":[["id","bigint",1,0,""],["tipo","varchar",1,0,""],["descricao","varchar",1,0,""],["valor","numeric",1,0,""],["data","date",1,0,""],["criado_em","timestamptz",1,0,""],["cavalo_id","bigint",0,0,""],["fatura_id","bigint",1,0,""]],"fk":{"cavalo_id":"cavalo","fatura_id":"fatura"}},"movimentacaoestoque":{"c":[["id","bigint",1,0,""],["data","date",1,0,""],["quantidade","numeric",1,0,""],["tipo","varchar",1,0,""],["observacao","text",1,0,""],["criado_em","timestamptz",1,0,""],["empresa_id","bigint",1,0,""],["item_id","bigint",1,0,""]],"fk":{"empresa_id":"empresa","item_id":"itemestoque"}}};
+const $=id=>document.getElementById(id);
+const G={base:["🏢 Base multiempresa","--sql",["empresa","perfil"]],alu:["🎓 Alunos e aulas","--pd",["plano","aluno","aula"]],fin:["💳 Financeiro","--tip",["fatura","itemfatura","movimentacaofinanceira"]],cav:["🐴 Cavalos e manejo","--biz",["cavalo","baia","piquete","registroocorrencia","documentocavalo","eventoagendacavalo","configprazomanejo"]],est:["📦 Estoque","--warn",["itemestoque","movimentacaoestoque"]]};
+const grp=t=>Object.keys(G).find(k=>G[k][2].includes(t));
+const POS={empresa:[375,10],perfil:[20,320],plano:[20,50],aluno:[200,50],aula:[20,190],cavalo:[430,170],baia:[700,50],piquete:[700,110],registroocorrencia:[700,200],documentocavalo:[700,260],eventoagendacavalo:[700,320],configprazomanejo:[700,420],fatura:[200,380],itemfatura:[430,380],movimentacaofinanceira:[200,500],itemestoque:[430,500],movimentacaoestoque:[650,500]};
+const NW=170,NH=32,names=Object.keys(ER);
+const edges=[];names.forEach(t=>Object.entries(ER[t].fk).forEach(([c,r])=>{if(r!=="empresa"&&ER[r])edges.push([t,r,c])}));
+let sel="cavalo",off={};
+// KPIs
+const nc=names.reduce((s,t)=>s+ER[t].c.length,0),nf=names.reduce((s,t)=>s+Object.keys(ER[t].fk).length,0),
+ fe=names.filter(t=>ER[t].fk.empresa_id==="empresa").length,nul=names.reduce((s,t)=>s+ER[t].c.filter(c=>!c[2]).length,0),
+ tz=names.reduce((s,t)=>s+ER[t].c.filter(c=>c[1]==="timestamptz").length,0);
+$("kp").innerHTML=[[names.length,"tabelas"],[nc,"colunas"],[nf,"chaves estrangeiras"],[fe+" de "+names.length,"com empresa_id"],[nul,"colunas que aceitam nulo"],[tz,"datas com fuso"]].map(x=>`<div><b>${x[0]}</b>${x[1]}</div>`).join("");
+// chips
+$("chips").innerHTML=Object.entries(G).map(([k,v])=>`<button data-g="${k}" style="border-color:var(${v[1]})">${v[0]}</button>`).join("");
+function dg(){const rel=new Set([sel]);edges.forEach(e=>{if(e[0]===sel)rel.add(e[1]);if(e[1]===sel)rel.add(e[0])});
+ let s="";edges.forEach(e=>{const a=POS[e[0]],b=POS[e[1]],hl=e[0]===sel||e[1]===sel,dim=off[grp(e[0])]&&off[grp(e[1])];
+  s+=`<line class="eg ${hl?"hl":(sel&&!hl?"dim":"")}${dim?" dim":""}" x1="${a[0]+NW/2}" y1="${a[1]+NH/2}" x2="${b[0]+NW/2}" y2="${b[1]+NH/2}"><title>${e[0]}.${e[2]} → ${e[1]}</title></line>`});
+ names.forEach(t=>{const p=POS[t],g=grp(t),d=off[g]||!rel.has(t);
+  s+=`<g class="nd ${t===sel?"sel":""} ${d?"dim":""}" data-t="${t}"><rect x="${p[0]}" y="${p[1]}" width="${NW}" height="${NH}" style="stroke:var(${G[g][1]})"/><text x="${p[0]+8}" y="${p[1]+20}" font-weight="700">${t}</text>${ER[t].fk.empresa_id==="empresa"?`<circle cx="${p[0]+NW-12}" cy="${p[1]+16}" r="5" fill="var(--tip)"><title>tem empresa_id (multiempresa)</title></circle>`:""}</g>`});
+ $("dg").innerHTML=s;
+ document.querySelectorAll("#chips button").forEach(b=>b.classList.toggle("off",!!off[b.dataset.g]))}
+// inspetor
+$("ts").innerHTML=names.map(t=>`<option value="${t}">gateagora_${t}</option>`).join("");
+const dt=(t,nn)=>({bigint:nn?"int64":"Int64 (aceita nulo)",integer:nn?"int64":"Int64 (aceita nulo)",numeric:"float64 / Decimal",varchar:"string",text:"string",boolean:nn?"bool":"boolean (aceita nulo)",date:"datetime64 (parse_dates)",timestamptz:"datetime64[ns, tz]",float8:"float64"}[t]||t);
+function insp(){const t=sel,T=ER[t];$("ts").value=t;$("tn").textContent=`${T.c.length} colunas`;
+ $("tt").innerHTML="<tr><th>coluna</th><th>tipo SQL</th><th>dtype no Pandas</th><th>restrições</th></tr>"+T.c.map(c=>{
+  const b=[c[0]==="id"?'<span class="bd pk">PK</span>':"",T.fk[c[0]]?`<span class="bd fk">FK → ${T.fk[c[0]]}</span>`:"",c[3]?'<span class="bd uq">UNIQUE</span>':"",c[2]?"":'<span class="bd nl">aceita NULL</span>',c[4]?`<span class="bd uq">CHECK ${c[4]}</span>`:""].join("");
+  return `<tr><td><b>${c[0]}</b></td><td>${c[1]}</td><td>${dt(c[1],c[2])}</td><td>${b}</td></tr>`}).join("");
+ const w=[];if(T.c.some(c=>c[1]==="timestamptz"))w.push("⏱️ Tem data com fuso: use <code>dt.tz_convert('America/Sao_Paulo')</code> antes de extrair hora e dia da semana.");
+ if(T.c.some(c=>c[1]==="numeric"&&/valor|mensal|mensalidade|quantidade/.test(c[0])))w.push("💰 Colunas <code>numeric</code> de dinheiro: evite float em cálculos contábeis (use centavos inteiros ou Decimal).");
+ if(T.c.some(c=>/qtd/.test(c[0])))w.push("🔤 Quantidades guardadas como <b>texto</b>: parse com <code>str.extract</code> e conte quantas viraram NaN.");
+ if(T.c.some(c=>!c[2]&&T.fk[c[0]]))w.push("🔗 Chave estrangeira que aceita nulo: um INNER JOIN <b>descarta</b> essas linhas.");
+ $("ta").innerHTML=w.length?`<div class="box tip">${w.join("<br>")}</div>`:""}
+function all(){dg();insp()}
+$("dg").onclick=e=>{const g=e.target.closest(".nd");if(g){sel=g.dataset.t;all()}};
+$("ts").onchange=e=>{sel=e.target.value;all()};
+$("chips").onclick=e=>{const b=e.target.closest("button");if(b){off[b.dataset.g]=!off[b.dataset.g];dg()}};
+// armadilhas derivadas
+const nf2=[],uq=[];names.forEach(t=>ER[t].c.forEach(c=>{if(!c[2]&&ER[t].fk[c[0]])nf2.push(`${t}.${c[0]}`);if(c[3])uq.push(`${t}.${c[0]}`)}));
+$("tr").innerHTML=[["warn","FKs que aceitam nulo",nf2.map(x=>`<code>${x}</code>`).join(", ")+". Cuidado com INNER JOIN."],["pd","Colunas UNIQUE",uq.map(x=>`<code>${x}</code>`).join(", ")+". Ex.: <code>cavalo.baia_id</code> UNIQUE = uma baia só pode ter um cavalo."],["biz","Sem histórico de status","<code>aluno.ativo</code> é o estado <b>atual</b>; não há data de cadastro nem de cancelamento. Churn precisa derivar de <code>aula.data_hora</code>."]].map(x=>`<div class="box ${x[0]}"><b>${x[1]}:</b> ${x[2]}</div>`).join("");
+const dgr={};edges.forEach(e=>{dgr[e[0]]=(dgr[e[0]]||0)+1;dgr[e[1]]=(dgr[e[1]]||0)+1});
+const rk=Object.entries(dgr).sort((a,b)=>b[1]-a[1]),mx=rk[0][1];
+$("deg").innerHTML=rk.map(([t,n])=>`<div class="hb"><span>${t}</span><i style="width:${n/mx*100}%">${n}</i></div>`).join("");
+// JOIN lab
+const AL=[[1,"Aluno A"],[2,"Aluno B"],[3,"Aluno C (sem fatura)"],[4,"Aluno D (sem fatura)"]];
+function jl(){const orf=$("orf").checked,k=$("jt").value;
+ const F=[[101,1,400],[102,1,400],[103,2,600],[104,null,250]];if(orf)F.push([105,9,500]);
+ const nome=id=>{const a=AL.find(x=>x[0]===id);return a?a[1]:null};let R=[];
+ if(k==="inner")F.forEach(f=>{if(nome(f[1]))R.push([f[0],f[1],nome(f[1]),f[2],1])});
+ else if(k==="left")F.forEach(f=>R.push([f[0],f[1],nome(f[1]),f[2],nome(f[1])?1:0]));
+ else if(k==="lefta")AL.forEach(a=>{const m=F.filter(f=>f[1]===a[0]);if(m.length)m.forEach(f=>R.push([f[0],a[0],a[1],f[2],1]));else R.push([null,a[0],a[1],null,0])});
+ else{F.forEach(f=>R.push([f[0],f[1],nome(f[1]),f[2],nome(f[1])?1:0]));AL.forEach(a=>{if(!F.some(f=>f[1]===a[0]))R.push([null,a[0],a[1],null,0])})}
+ const tot=R.reduce((s,r)=>s+(r[3]||0),0);
+ $("jr").innerHTML="<tr><th>fatura.id</th><th>aluno_id</th><th>aluno.nome</th><th>valor</th></tr>"+R.map(r=>`<tr class="${r[4]?"":"nm"}"><td>${r[0]??"NULL"}</td><td>${r[1]??"NULL"}</td><td>${r[2]??"NULL"}</td><td>${r[3]==null?"NULL":"R$ "+r[3]}</td></tr>`).join("");
+ const full=F.reduce((s,f)=>s+f[2],0);
+ $("jx").innerHTML=`Linhas: <b>${R.length}</b> · soma dos valores: <b>R$ ${tot}</b> (faturamento real: R$ ${full}) `+(tot<full?`<b style="color:var(--warn)">⚠️ perdeu R$ ${full-tot}: faturas sem aluno foram descartadas.</b>`:"✅ nada se perdeu.")+" Linhas vermelhas = sem correspondência.";
+ const hm={inner:"inner",left:"left",lefta:"left",outer:"outer"}[k],lft=k==="lefta";
+ $("jc").textContent=`-- SQL\nSELECT f.id, f.aluno_id, a.nome, f.valor\nFROM gateagora_${lft?"aluno a LEFT JOIN gateagora_fatura f ON f.aluno_id = a.id":"fatura f "+({inner:"INNER JOIN",left:"LEFT JOIN",outer:"FULL OUTER JOIN"}[k])+" gateagora_aluno a ON a.id = f.aluno_id"};\n\n# Pandas\n${lft?"alunos.merge(faturas, left_on='id', right_on='aluno_id'":"faturas.merge(alunos, left_on='aluno_id', right_on='id'"}, how='${hm}', indicator=True, validate='${lft?"1:m":"m:1"}')`}
+["jt","orf"].forEach(i=>$(i).onchange=jl);jl();
+// queries
+const QS=[["Faturas sem aluno (aluno_id nulo)","SELECT empresa_id, COUNT(*) AS faturas_sem_aluno\nFROM gateagora_fatura\nWHERE aluno_id IS NULL\nGROUP BY empresa_id;"],
+["Valores existentes de status (planeje a limpeza)","SELECT status, COUNT(*) AS qtd\nFROM gateagora_fatura\nGROUP BY status\nORDER BY qtd DESC;"],
+["Soma dos itens bate com o valor da fatura?","SELECT f.id, f.valor, COALESCE(SUM(i.valor), 0) AS soma_itens\nFROM gateagora_fatura f\nLEFT JOIN gateagora_itemfatura i ON i.fatura_id = f.id\nGROUP BY f.id, f.valor\nHAVING f.valor <> COALESCE(SUM(i.valor), 0);"],
+["Alunos ativos sem aula nos últimos 60 dias","SELECT a.empresa_id, a.id AS aluno_id\nFROM gateagora_aluno a\nWHERE a.ativo\n  AND NOT EXISTS (SELECT 1 FROM gateagora_aula x\n                  WHERE x.aluno_id = a.id\n                    AND x.data_hora >= NOW() - INTERVAL '60 days');"],
+["Vacina vencida segundo o prazo da empresa (supõe prazo em dias: confirme)","SELECT c.id AS cavalo_id, c.empresa_id,\n       CURRENT_DATE - c.ultima_vacina AS dias_desde_vacina, p.prazo_vacina\nFROM gateagora_cavalo c\nJOIN gateagora_configprazomanejo p ON p.empresa_id = c.empresa_id\nWHERE c.ultima_vacina IS NOT NULL\n  AND CURRENT_DATE - c.ultima_vacina > p.prazo_vacina;"],
+["Dias de cobertura do estoque","SELECT id, nome, quantidade_atual, consumo_diario,\n       quantidade_atual / NULLIF(consumo_diario, 0) AS dias_cobertura\nFROM gateagora_itemestoque\nORDER BY dias_cobertura;"],
+["Como estão escritas as quantidades de ração (texto)?","SELECT racao_qtd_manha, COUNT(*) AS qtd\nFROM gateagora_cavalo\nGROUP BY racao_qtd_manha\nORDER BY qtd DESC\nLIMIT 20;"]];
+$("qs").innerHTML=QS.map((q,i)=>`<div class="lab"><b>${i+1}. ${q[0]}</b> <button class="bt" data-c="${i}">Copiar</button><pre id="q${i}">${q[1]}</pre></div>`).join("");
+$("qs").onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;const p=$("q"+b.dataset.c);try{navigator.clipboard.writeText(p.textContent);b.textContent="Copiado!"}catch(x){const r=document.createRange();r.selectNodeContents(p);getSelection().removeAllRanges();getSelection().addRange(r);b.textContent="Selecionado: Ctrl+C"}setTimeout(()=>b.textContent="Copiar",2000)};
+// quiz
+const Q=[["Qual coluna indica se o aluno está ativo agora?",["aluno.ativo (boolean)","aluno.status","aluno.data_cancelamento"],0,"Só existe <code>ativo</code>, o estado atual. Não há data de cancelamento no ER."],
+["Por que não dá para calcular o tempo de casa só com gateagora_aluno?",["Falta a coluna nome","Não há data de cadastro","O plano é nulo"],1,"Sem data de cadastro, use a primeira <code>aula.data_hora</code> como aproximação e comece a gravar snapshots."],
+["cavalo.baia_id é UNIQUE e aceita nulo. O que isso significa?",["Uma baia pode ter vários cavalos","Cada baia tem no máximo um cavalo, e um cavalo pode estar sem baia","Todo cavalo precisa ter uma baia"],1,"UNIQUE em chave estrangeira limita a no máximo um cavalo por baia. Como a coluna aceita NULL, existem cavalos sem baia atribuída: um INNER JOIN com <code>baia</code> os descartaria."],
+["fatura.aluno_id aceita nulo. Qual dtype do Pandas usar?",["int64","Int64 (com I maiúsculo)","float32"],1,"O <code>int64</code> comum não aceita nulo; <code>Int64</code> aceita. E o INNER JOIN descarta essas linhas."],
+["Por que quase toda consulta deve filtrar ou agrupar por empresa_id?",["Para ficar mais rápida","O GATE4 é multiempresa: misturar empresas gera indicadores errados","Porque é obrigatório no Postgres"],1,"Cada empresa (haras) tem os próprios alunos, faturas e prazos."]];
+$("quiz").innerHTML=Q.map((q,i)=>`<div class="q"><b>${i+1}. ${q[0]}</b>${q[1].map((o,j)=>`<button data-q="${i}" data-o="${j}">${o}</button>`).join("")}<div id="f${i}"></div></div>`).join("");
+$("quiz").onclick=e=>{const b=e.target.closest("button");if(!b)return;const i=+b.dataset.q,ok=+b.dataset.o===Q[i][2];$("f"+i).innerHTML=`<div class="box ${ok?"pd":"warn"}">${ok?"✅ Correto. ":"❌ Ainda não. "}${Q[i][3]}</div>`};
+// checklist
+const CL=["Abri o diagrama e entendi os 5 módulos","Identifiquei as FKs que aceitam nulo","Expliquei a diferença entre INNER e LEFT JOIN no laboratório","Rodei 3 consultas de auditoria numa cópia/usuário somente leitura","Anotei as colunas de texto que preciso limpar (quantidades)","Respondi o quiz sem consultar"];
+let ck={};try{ck=JSON.parse(localStorage.getItem("g18a")||"{}")}catch(x){}
+function cl(){$("cl").innerHTML=CL.map((t,i)=>`<label><input type="checkbox" data-k="${i}" ${ck[i]?"checked":""}> ${t}</label>`).join("");$("pb").style.width=100*CL.filter((_,i)=>ck[i]).length/CL.length+"%"}
+$("cl").onchange=e=>{ck[e.target.dataset.k]=e.target.checked;try{localStorage.setItem("g18a",JSON.stringify(ck))}catch(x){}cl()};
+cl();all();
+</script>
+</main></body></html>

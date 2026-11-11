@@ -37,3 +37,16 @@ dist/
 *.egg-info/
 data/processed/
 data/raw/
+
+# dbt Core
+target/
+dbt_packages/
+logs/
+
+# Dados analíticos locais
+*.parquet
+*.duckdb
+*.duckdb.wal
+
+# Templates / pastas auxiliares locais
+ai-driven-python-template/
