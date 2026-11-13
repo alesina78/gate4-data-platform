@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Ambiente
+.env
+.env.local
+
+# Dados reais (NUNCA commitar dados de clientes)
+data/real/
+*.csv
+*.parquet
+!data/synthetic/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Power BI (o .pbix vai só em releases)
+*.pbix
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
