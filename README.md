@@ -59,7 +59,7 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 | **M1 · Qualidade** | `src/gate4/g18_m1_qualidade.py` | Auditoria de integridade referencial, detecção de FKs órfãs e validação de nulos por criticidade |
 | **M2 · Limpeza** | `src/gate4/g18_m2_limpeza.py` | Normalização de textos via Regex, conversão segura de tipos (`Int64`, `datetime`) e log de transformações |
 
-### Camada Analítica & Analytics Engineering
+### Camada Analítica & Analytics Engineering & Orquestração
 
 | Módulo | Arquivo | Responsabilidade |
 |---|---|---|
@@ -68,6 +68,7 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 | **M5 · Manejo** | `src/gate4/g18_m5_manejo.py` | Auditoria de prazos de vacinas, vermífugos, ferrageamentos e casqueamentos por empresa |
 | **M6 · Estoque** | `src/gate4/g18_m6_estoque.py` | Dias de cobertura de insumos, prevenção de divisão por zero e alertas de ruptura |
 | **M7 · Alunos & RFM** | `src/gate4/g18_m7_alunos.py` | Alunos em risco de churn (>60 dias sem frequência) e métricas RFM |
+| **Power BI & MLOps** | `notebooks/guia-12-power-bi/` | Dashboards Power BI, MLOps, Feature Store e DAGs Airflow para orquestração |
 | **dbt Analytics** | `notebooks/guia-15-dbt-analytics/` | Modelagem dbt (staging, marts, incremental), testes de integridade e testes singulares em SQL |
 | **SQL Avançado** | `notebooks/guia-13-sql-entrevistas/` | 8 Padrões SQL avançados (Oracle vs PostgreSQL), tuning de queries, janelas analíticas e simulador |
 
@@ -142,6 +143,7 @@ Jornada de transição de **Oracle/PL-SQL Sênior → Engenharia de Dados & Anal
 | `notebooks/guia-02-series-temporais/` | Guia 2 | Séries Temporais, resample, rolling e leakage temporal | ✅ Concluído |
 | `notebooks/guia-03-fastapi-docker/` | Guia 3 | FastAPI + Docker: API de risco de churn em container | ✅ Concluído |
 | `notebooks/guia-06-airflow/` | Guia 6 | Orquestração de workflows com Apache Airflow | ✅ Concluído |
+| `notebooks/guia-12-power-bi/` | Guia 12 | Power BI, MLOps, Feature Store e DAG Airflow | ✅ Concluído |
 | `notebooks/guia-13-sql-entrevistas/` | Guia 13 | SQL Avançado para Entrevistas (8 Padrões Oracle/PG, Tuning) | ✅ Concluído |
 | `notebooks/guia-15-dbt-analytics/` | Guia 15 | Analytics Engineering com dbt (Staging, Marts, Testes) | ✅ Concluído |
 
