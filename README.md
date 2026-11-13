@@ -35,11 +35,11 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 ┌─────────────────────────────────────────────────────────────┐
 │                     GATE4 Data Platform                     │
 ├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-│   M0     │   M1     │   M2     │  M3–M7   │   M8 / dbt      │
+│    M0    │    M1    │    M2    │  M3–M7   │   M8 / dbt      │
 │ Gerador  │Qualidade │ Limpeza  │Analytics │ Analytics Eng.  │
 │Sintético │          │          │          │ & Orquestração  │
 ├──────────┴──────────┴──────────┴──────────┴─────────────────┤
-│            Persistência em Parquet / Postgres DB            │
+│             Persistência em Parquet / Postgres DB           │
 ├─────────────────────────────────────────────────────────────┤
 │         ML · Churn Prediction  (HistGradientBoosting)       │
 └─────────────────────────────────────────────────────────────┘
@@ -59,7 +59,7 @@ Este projeto constrói a **espinha dorsal analítica** do GATE4 — plataforma S
 | **M1 · Qualidade** | `src/gate4/g18_m1_qualidade.py` | Auditoria de integridade referencial, detecção de FKs órfãs e validação de nulos por criticidade |
 | **M2 · Limpeza** | `src/gate4/g18_m2_limpeza.py` | Normalização de textos via Regex, conversão segura de tipos (`Int64`, `datetime`) e log de transformações |
 
-### Camada Analítica & Analytics Engineering & Orquestração
+### Camada Analítica, Analytics Engineering & Orquestração
 
 | Módulo | Arquivo | Responsabilidade |
 |---|---|---|
@@ -92,6 +92,7 @@ Além do pipeline principal, a pasta `scripts/` e a pasta `notebooks/` abrigam s
 | `scripts/generators_G18_1.py` | Gerador auxiliar usado durante o desenvolvimento do M0 |
 | `notebooks/guia-19-setup-vscode/` | **Guia 19:** Passo a passo interativo de setup do ambiente (VS Code, Python, venv, pytest, Git) |
 | `notebooks/guia-18-projeto-pandas-numpy/` | **Guias 18A, 18B, 18C:** Exploração do ER real (17 tabelas), laboratório de dados sintéticos (M0) e plano de projeto |
+| `notebooks/guia-12-power-bi/` | **Guia 12:** Dashboards Power BI, modelagem de dimensões, Feature Store (MLOps) e DAGs Airflow |
 | `notebooks/guia-13-sql-entrevistas/` | **Guia 13:** 8 padrões SQL de entrevistas (Top-N, Gaps & Islands, Coorte, NOT EXISTS vs NOT IN) |
 | `notebooks/guia-15-dbt-analytics/` | **Guia 15:** Projeto dbt Core com camada de staging, marts, testes schema e singulares |
 
@@ -194,7 +195,7 @@ python src/gate4/g18_m3_financeiro.py
 ```
 gate4-data-platform/
 │
-├── src/gate4/                          # Módulos de produção (M0–M8 + ML Churn)
+├── src/gate4/                             # Módulos de produção (M0–M8 + ML Churn)
 │   ├── g18_m0_gerador.py
 │   ├── g18_m1_qualidade.py
 │   ├── g18_m2_limpeza.py
@@ -206,32 +207,40 @@ gate4-data-platform/
 │   ├── g18_pipeline.py
 │   └── g18_guia1_churn.py
 │
-├── notebooks/                          # Cadernos de estudo — trilha de transição
-│   ├── guia-01-sql-pandas-ml/          # Guia 1: SQL → Pandas → ML
-│   ├── guia-02-series-temporais/       # Guia 2: Séries temporais, rolling, leakage
-│   ├── guia-03-fastapi-docker/         # Guia 3: FastAPI + Docker
-│   ├── guia-06-airflow/                # Guia 6: Orquestração com Apache Airflow
-│   ├── guia-13-sql-entrevistas/        # Guia 13: SQL Avançado (8 Padrões Oracle/PG, Tuning)
-│   ├── guia-15-dbt-analytics/          # Guia 15: dbt Analytics Engineering (Staging, Marts, Testes)
-│   ├── guia-18-projeto-pandas-numpy/   # Guia 18 (18A/18B/18C): ER real, gerador M0 e plano M0–M8
-│   └── guia-19-setup-vscode/           # Guia 19: Setup interativo de ambiente e Git
+├── notebooks/                             # Cadernos de estudo — trilha de transição
+│   ├── guia-01-sql-pandas-ml/             # Guia 1: SQL → Pandas → ML
+│   ├── guia-02-series-temporais/          # Guia 2: Séries temporais, rolling, leakage
+│   ├── guia-03-fastapi-docker/            # Guia 3: FastAPI + Docker
+│   ├── guia-06-airflow/                   # Guia 6: Orquestração com Apache Airflow
+│   ├── guia-12-power-bi/                  # Guia 12: Power BI, MLOps, Feature Store e Airflow
+│   │   ├── 01_dim_data.sql
+│   │   ├── 02_feature_store.py
+│   │   ├── 03_dax_medidas
+│   │   ├── 04_pipeline_airflow.py
+│   │   ├── gitignore
+│   │   ├── README.md
+│   │   └── requirements.txt
+│   ├── guia-13-sql-entrevistas/           # Guia 13: SQL Avançado (8 Padrões Oracle/PG, Tuning)
+│   ├── guia-15-dbt-analytics/             # Guia 15: dbt Analytics Engineering (Staging, Marts, Testes)
+│   ├── guia-18-projeto-pandas-numpy/      # Guia 18 (18A/18B/18C): ER real, gerador M0 e plano M0–M8
+│   └── guia-19-setup-vscode/              # Guia 19: Setup interativo de ambiente e Git
 │
-├── scripts/                            # Utilitários, protótipos e benchmarks
+├── scripts/                               # Utilitários, protótipos e benchmarks
 │   ├── g10_churn_project.py
 │   ├── g16_performance.py
 │   ├── generators_G18_1.py
 │   └── README.md
 │
-├── modelos/                            # Artefatos serializados (.joblib)
+├── modelos/                               # Artefatos serializados (.joblib)
 │   ├── churn_v1.joblib
 │   └── modelo_churn_gate4.joblib
 │
-├── docs/                               # Documentação e anotações técnicas
+├── docs/                                  # Documentação e anotações técnicas
 │   ├── Anotacoes.sql
 │   ├── ARQUITETURA.md
 │   └── DIAGNOSTICO_GATE4.md
 │
-├── saidas/                             # Visualizações PNG geradas pelo pipeline
+├── saidas/                                # Visualizações PNG geradas pelo pipeline
 │   ├── 01_hist_dias_atraso.png
 │   ├── 02_boxplot_mensalidade_plano.png
 │   ├── 03_barras_atraso_plano.png
@@ -240,7 +249,7 @@ gate4-data-platform/
 │   ├── 06_matriz_confusao.png
 │   └── 07_curva_precision_recall.png
 │
-├── tests/                              # Suíte pytest (unitários + integração)
+├── tests/                                 # Suíte pytest (unitários + integração)
 │   ├── test_g18_m3_financeiro.py
 │   ├── test_g18_m4_m5_manejo.py
 │   ├── test_g18_m6_m7_estoque_alunos.py
@@ -248,10 +257,23 @@ gate4-data-platform/
 │   ├── test_smoke_basico.py
 │   └── test_smoke.py
 │
-├── .github/workflows/python-tests.yml  # CI — executa pytest a cada push
+├── .github/workflows/python-tests.yml     # CI — executa pytest a cada push
 ├── pyproject.toml
 └── README.md
 ```
+
+### 📂 Detalhamento do Guia 12 (`notebooks/guia-12-power-bi/`)
+
+A pasta do Guia 12 integra a camada de visualização, MLOps e orquestração do ecossistema GATE4 com os seguintes componentes:
+
+| Arquivo | Descrição / Responsabilidade |
+|---|---|
+| `01_dim_data.sql` | Scripts SQL para criação e população da dimensão de tempo/data de suporte analítico. |
+| `02_feature_store.py` | Extração e persistência de features para o pipeline de Machine Learning (MLOps). |
+| `03_dax_medidas` | Fórmulas e medidas DAX avançadas estruturadas para os dashboards do Power BI. |
+| `04_pipeline_airflow.py` | DAG do Apache Airflow para orquestração automatizada do fluxo de dados. |
+| `requirements.txt` | Dependências e bibliotecas Python específicas necessárias para rodar os scripts do guia. |
+| `README.md` | Documentação e guia de instruções dedicado ao laboratório do Power BI e MLOps. |
 
 ---
 
